@@ -7,7 +7,7 @@ import neat.Neat;
 /*
  * These are the Genes for the connections between nodes
  */
-public class ConnectionGene {
+public class ConnectionGene extends Gene{
 	
 	//specifies which nodes it connects
 	private NodeGene from;
@@ -18,6 +18,7 @@ public class ConnectionGene {
 	
 	
 	public ConnectionGene(NodeGene from, NodeGene to) {
+		super(-1); //temporarily set the innovation number to -1
 		this.from = from;
 		this.to = to;
 	}
