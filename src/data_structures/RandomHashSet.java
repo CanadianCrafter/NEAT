@@ -56,6 +56,22 @@ public class RandomHashSet<T> {
 		set.remove(object);
 		data.remove(object);
 	}
+
+	public HashSet<T> getSet() {
+		return set;
+	}
+
+	public void setSet(HashSet<T> set) {
+		this.set = set;
+	}
+
+	public ArrayList<T> getData() {
+		return data;
+	}
+
+	public void setData(ArrayList<T> data) {
+		this.data = data;
+	}
 	
 	
 	
