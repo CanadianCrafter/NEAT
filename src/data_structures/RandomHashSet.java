@@ -2,6 +2,8 @@ package data_structures;
 
 import java.util.*;
 
+import genome.Gene;
+
 public class RandomHashSet<T> {
 	
 	//Both set and data contain the same information, we just use each one for different purposes
@@ -34,6 +36,23 @@ public class RandomHashSet<T> {
 			set.add(object);
 			data.add(object);
 		}
+	}
+	
+	//Adds a gene in a sorted fashion
+	public void addSorted(Gene object) {
+		for(int i =0 ;i< this.size(); i++) {
+			int innovationNumber = ((Gene)data.get(i)).getInnovationNumber();
+			if(object.getInnovationNumber() < innovationNumber) {
+				data.add(i, (T)object);
+				set.add((T)object);
+				return;
+			}
+		}
+		//if the object's innovation number is larger than all the previous ones
+		data.add((T)object);
+		set.add((T)object);
+		return;
+		
 	}
 	
 	public void clear() {
