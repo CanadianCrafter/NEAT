@@ -24,8 +24,7 @@ public class Genome {
 	public double distance(Genome genome2) {
 		Genome genome1 = this;
 		
-		//Since genome1 has to have the larger innovation number, if this genome has a smaller one, we swap the two
-		//We do this because we want to copy more information from the fitter genome
+		//For calculating excess genes later on, we will ensure that genome1's length >= genome2's length
 		int highestInnovationGene1 = genome1.getConnections().get(genome1.getConnections().size()-1).getInnovationNumber();
 		int highestInnovationGene2 = genome2.getConnections().get(genome2.getConnections().size()-1).getInnovationNumber();
 		
@@ -55,7 +54,7 @@ public class Genome {
 			
 			
 			if(innovationNum1 == innovationNum2) {
-				//Similar Genes
+				//Matching Genes
 				numSimilar++;
 				totalWeightDiff += Math.abs(gene1.getWeight() - gene2.getWeight());
 				index1++;
@@ -75,7 +74,7 @@ public class Genome {
 		}
 		
 		weightDiff =totalWeightDiff/ numSimilar;
-		numExcess = genome1.getConnections().size() - index1;
+		numExcess = genome1.getConnections().size() - index1; //Since genome1's length >= genome2's length, the rest are excess genes
 		
 		double N = Math.max(genome1.getConnections().size(), genome2.getConnections().size());
 		
@@ -91,13 +90,21 @@ public class Genome {
 		return ((numDisjoint / N) + (numExcess / N) + weightDiff);
 	}
 	
+	/*
+	 * Creates a child genome from two parent genomes
+	 * For matching genes, 50% chance you inherit from genome1, 50% chance you inherit from genome2
+	 * For disjoint and excess genes, always inherit from the fitter genome
+	 * We make genome1 hold the fitter parent
+	 */
 	public static Genome crossOver(Genome genome1, Genome genome2) {
 		
 		Neat neat = genome1.getNeat();
-		Genome genome = neat.emptyGenome();
+		Genome childGenome = neat.emptyGenome();
 		
 		int index1 = 0;
 		int index2 = 0;
+		
+		//TODO: Ensure genome1 is fitter
 		
 		while(index1 < genome1.getConnections().size() && index2 < genome2.getConnections().size()) {
 			
@@ -109,25 +116,25 @@ public class Genome {
 			
 			
 			if(innovationNum1 == innovationNum2) {
-				//Similar Genes
+				//Matching Genes
 				
-				//50% chance we pick a gene from genome1, and 50% change we get one from genome2
+				//50% chance we pick a gene from genome1, and 50% chance we get one from genome2
 				if(Math.random() > 0.5) {
-					genome.getConnections().add(neat.copyConnection(gene1));
+					childGenome.getConnections().add(neat.copyConnection(gene1));
 				}
 				else {
-					genome.getConnections().add(neat.copyConnection(gene2));
+					childGenome.getConnections().add(neat.copyConnection(gene2));
 				}
 				index1++;
 				index2++;
 			}
 			else if(innovationNum1 > innovationNum2) {
-				//Second genome has a disjoint gene here
+				//Second genome has a disjoint gene here; we don't add it since it's the less fit genome
 				index2++;
 			}
 			else {
-				//First genome has a disjoint gene here
-				genome.getConnections().add(neat.copyConnection(gene1));
+				//First genome has a disjoint gene here; we add it since it is the fitter genome
+				childGenome.getConnections().add(neat.copyConnection(gene1));
 				index1++;
 			}
 			
@@ -135,16 +142,16 @@ public class Genome {
 		
 		while(index1 < genome1.getConnections().size()) {
 			ConnectionGene gene1 = genome1.getConnections().get(index1);
-			genome.getConnections().add(neat.copyConnection(gene1));
+			childGenome.getConnections().add(neat.copyConnection(gene1));
 			index1++;
 		}
 		
-		for(ConnectionGene c: genome.getConnections().getData()) {
-			genome.getNodes().add(c.getFrom());
-			genome.getNodes().add(c.getTo());
+		for(ConnectionGene c: childGenome.getConnections().getData()) {
+			childGenome.getNodes().add(c.getFrom());
+			childGenome.getNodes().add(c.getTo());
 		}
 		
-		return genome;
+		return childGenome;
 		
 	}
 	
