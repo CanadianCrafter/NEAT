@@ -10,6 +10,20 @@ public class Neat {
 	
 	public static final int MAX_NODES = (int) Math.pow(2, 20);
 	
+	private double C1 = 1;
+	private double C2 = 1;
+	private double C3 = 1;
+	
+	private double WEIGHT_SHIFT_STRENGTH = 0.3;
+	private double WEIGHT_RANDOM_STRENGTH = 1;
+	
+	
+	private double PROBABILITY_MUTATE_CONNECTION = 0.4;
+	private double PROBABILITY_MUTATE_NODE = 0.4;
+	private double PROBABILITY_MUTATE_WEIGHT_SHIFT = 0.4;
+	private double PROBABILITY_MUTATE_WEIGHT_RANDOM = 0.4;
+	private double PROBABILITY_MUTATE_TOGGLE_CONNECTION = 0.4;
+	
 	//The same connection matches to itself, this is simply to leverage a map's ease of use.	
 	private HashMap<ConnectionGene, ConnectionGene> allConnections = new HashMap<>(); 
 	private ArrayList<NodeGene> allNodes = new ArrayList<>();
@@ -97,6 +111,70 @@ public class Neat {
 	}
 	
 	
+	public double getC1() {
+		return C1;
+	}
+
+	public double getC2() {
+		return C2;
+	}
+
+	public double getC3() {
+		return C3;
+	}
+	
+	public double getWEIGHT_SHIFT_STRENGTH() {
+		return WEIGHT_SHIFT_STRENGTH;
+	}
+
+	public double getWEIGHT_RANDOM_STRENGTH() {
+		return WEIGHT_RANDOM_STRENGTH;
+	}
+	
+	public double getPROBABILITY_MUTATE_CONNECTION() {
+		return PROBABILITY_MUTATE_CONNECTION;
+	}
+
+	public double getPROBABILITY_MUTATE_NODE() {
+		return PROBABILITY_MUTATE_NODE;
+	}
+
+	public double getPROBABILITY_MUTATE_WEIGHT_SHIFT() {
+		return PROBABILITY_MUTATE_WEIGHT_SHIFT;
+	}
+
+	public double getPROBABILITY_MUTATE_WEIGHT_RANDOM() {
+		return PROBABILITY_MUTATE_WEIGHT_RANDOM;
+	}
+
+	public double getPROBABILITY_MUTATE_TOGGLE_CONNECTION() {
+		return PROBABILITY_MUTATE_TOGGLE_CONNECTION;
+	}
+
+	public static int getMaxNodes() {
+		return MAX_NODES;
+	}
+
+	public HashMap<ConnectionGene, ConnectionGene> getAllConnections() {
+		return allConnections;
+	}
+
+	public ArrayList<NodeGene> getAllNodes() {
+		return allNodes;
+	}
+
+	public int getInputSize() {
+		return inputSize;
+	}
+
+	public int getOutputSize() {
+		return outputSize;
+	}
+
+	public int getMaxClients() {
+		return maxClients;
+	}
+
 	public static void main(String[] args) {
 		Neat neat = new Neat(3,3,100);
 		
