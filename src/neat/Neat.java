@@ -177,7 +177,7 @@ public class Neat {
 	}
 
 	public static void main(String[] args) {
-		Neat neat = new Neat(3,3,0);
+		Neat neat = new Neat(3,2,0);
 		new Frame(neat.emptyGenome());
 	}
 	

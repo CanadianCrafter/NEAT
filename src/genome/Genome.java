@@ -2,6 +2,7 @@ package genome;
 
 import data_structures.RandomHashSet;
 import neat.Neat;
+import calculations.Calculator;
 
 import java.util.*;
 
@@ -11,6 +12,7 @@ public class Genome {
 	private RandomHashSet<NodeGene> nodes = new RandomHashSet<>();
 	
 	private Neat neat;
+	private Calculator calculator;
 	
 	public Genome(Neat neat) {
 		this.neat = neat;
@@ -153,6 +155,18 @@ public class Genome {
 		
 		return childGenome;
 		
+	}
+	
+	public void generateCalculator() {
+		calculator = new Calculator(this);
+	}
+	
+	
+	public double[] calculate(double... array) {
+		if(calculator != null) {
+			return calculator.calculate(array);
+		}
+		return null;
 	}
 	
 	public void mutate() {

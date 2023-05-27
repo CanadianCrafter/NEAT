@@ -1,0 +1,66 @@
+package calculations;
+
+import java.util.*;
+
+import neat.Neat;
+
+/*
+ * These are the Genes for the connections between nodes
+ */
+public class Connection {
+	
+	//specifies which nodes it connects
+	private Node from;
+	private Node to;
+	
+	private double weight; //every connection has a weight
+	private boolean enabled = true; //connections can be enabled or not
+	
+	
+	public Connection(Node from, Node to) {
+		this.from = from;
+		this.to = to;
+	}
+
+
+	public Node getFrom() {
+		return from;
+	}
+
+
+	public void setFrom(Node from) {
+		this.from = from;
+	}
+
+
+	public Node getTo() {
+		return to;
+	}
+
+
+	public void setTo(Node to) {
+		this.to = to;
+	}
+
+
+	public double getWeight() {
+		return weight;
+	}
+
+
+	public void setWeight(double weight) {
+		this.weight = weight;
+	}
+
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
+
+}
