@@ -5,6 +5,7 @@ import java.util.*;
 import genome.ConnectionGene;
 import genome.Genome;
 import genome.NodeGene;
+import visual.Frame;
 
 public class Neat {
 	
@@ -176,10 +177,8 @@ public class Neat {
 	}
 
 	public static void main(String[] args) {
-		Neat neat = new Neat(3,3,100);
-		
-		Genome genome = neat.emptyGenome();
-		System.out.println(genome.getNodes().size());
+		Neat neat = new Neat(3,3,0);
+		new Frame(neat.emptyGenome());
 	}
 	
 
