@@ -15,6 +15,8 @@ public class Neat {
 	private double C2 = 1;
 	private double C3 = 1;
 	
+	private double CP = 4;
+	
 	private double WEIGHT_SHIFT_STRENGTH = 0.3;
 	private double WEIGHT_RANDOM_STRENGTH = 1;
 	
@@ -124,6 +126,14 @@ public class Neat {
 		return C3;
 	}
 	
+	public double getCP() {
+		return CP;
+	}
+
+	public void setCP(double cP) {
+		CP = cP;
+	}
+
 	public double getWEIGHT_SHIFT_STRENGTH() {
 		return WEIGHT_SHIFT_STRENGTH;
 	}

@@ -12,7 +12,6 @@ public class Genome {
 	private RandomHashSet<NodeGene> nodes = new RandomHashSet<>();
 	
 	private Neat neat;
-	private Calculator calculator;
 	
 	public Genome(Neat neat) {
 		this.neat = neat;
@@ -27,8 +26,9 @@ public class Genome {
 		Genome genome1 = this;
 		
 		//For calculating excess genes later on, we will ensure that genome1's length >= genome2's length
-		int highestInnovationGene1 = genome1.getConnections().get(genome1.getConnections().size()-1).getInnovationNumber();
-		int highestInnovationGene2 = genome2.getConnections().get(genome2.getConnections().size()-1).getInnovationNumber();
+		
+		int highestInnovationGene1 = genome1.getConnections().size() != 0 ? genome1.getConnections().get(genome1.getConnections().size()-1).getInnovationNumber() : 0;
+		int highestInnovationGene2 = genome2.getConnections().size() != 0 ? genome2.getConnections().get(genome2.getConnections().size()-1).getInnovationNumber() : 0;
 		
 		if(highestInnovationGene1 < highestInnovationGene2) {
 			Genome tempGenome = genome1;
@@ -96,7 +96,7 @@ public class Genome {
 	 * Creates a child genome from two parent genomes
 	 * For matching genes, 50% chance you inherit from genome1, 50% chance you inherit from genome2
 	 * For disjoint and excess genes, always inherit from the fitter genome
-	 * We make genome1 hold the fitter parent
+	 * genome1 has to hold the fitter parent
 	 */
 	public static Genome crossOver(Genome genome1, Genome genome2) {
 		
@@ -106,7 +106,7 @@ public class Genome {
 		int index1 = 0;
 		int index2 = 0;
 		
-		//TODO: Ensure genome1 is fitter
+		//TODO: Ensure genome1 is fitter (Done, it is ensured in Species since it knows the score)
 		
 		while(index1 < genome1.getConnections().size() && index2 < genome2.getConnections().size()) {
 			
@@ -155,18 +155,6 @@ public class Genome {
 		
 		return childGenome;
 		
-	}
-	
-	public void generateCalculator() {
-		calculator = new Calculator(this);
-	}
-	
-	
-	public double[] calculate(double... array) {
-		if(calculator != null) {
-			return calculator.calculate(array);
-		}
-		return null;
 	}
 	
 	public void mutate() {
