@@ -68,8 +68,9 @@ public class Species {
 				}));
 		//individuals is now sorted in decreasing order of score
 		//We remove the last percentage amount
-		//We remove from the back since it's faster than removing from the front (which requires everything to be shifted forwards)		
-		for(int i = 0; i< percentage * individuals.size();i++) {
+		//We remove from the back since it's faster than removing from the front (which requires everything to be shifted forwards)	
+		double deathToll = percentage * individuals.size();
+		for(int i = 0; i< deathToll;i++) {
 			individuals.get(individuals.size()-1).setSpecies(null); //We always remove from the last index since the size is decreasing
 			individuals.remove(individuals.size()-1);
 		}
@@ -87,6 +88,21 @@ public class Species {
 	public int size() {
 		return individuals.size();
 	}
+
+	public RandomHashSet<Individual> getIndividuals() {
+		return individuals;
+	}
+
+	public Individual getRepresentative() {
+		return representative;
+	}
+
+	public double getScore() {
+		return score;
+	}
 	
+
+
+
 
 }

@@ -3,6 +3,7 @@ package neat;
 import java.util.*;
 
 import data_structures.RandomHashSet;
+import data_structures.RandomSelector;
 import genome.ConnectionGene;
 import genome.Genome;
 import genome.NodeGene;
@@ -23,11 +24,11 @@ public class Neat {
 	
 	private double SURVIVOR_RATE = 0.8;
 	
-	private double PROBABILITY_MUTATE_CONNECTION = 0.4;
-	private double PROBABILITY_MUTATE_NODE = 0.4;
-	private double PROBABILITY_MUTATE_WEIGHT_SHIFT = 0.4;
-	private double PROBABILITY_MUTATE_WEIGHT_RANDOM = 0.4;
-	private double PROBABILITY_MUTATE_TOGGLE_CONNECTION = 0.4;
+	private double PROBABILITY_MUTATE_CONNECTION = 0.01;
+	private double PROBABILITY_MUTATE_NODE = 0.003;
+	private double PROBABILITY_MUTATE_WEIGHT_SHIFT = 0.002;
+	private double PROBABILITY_MUTATE_WEIGHT_RANDOM = 0.002;
+	private double PROBABILITY_MUTATE_TOGGLE_CONNECTION = 0;
 	
 	//The same connection matches to itself, this is simply to leverage a map's ease of use.	
 	private HashMap<ConnectionGene, ConnectionGene> allConnections = new HashMap<>(); 
@@ -117,8 +118,8 @@ public class Neat {
 		generateSpecies(); //This groups the individuals into the species
 		kill(); //Kill some percentage of the individuals
 		removeExtinctSpecies(); //If any species goes extinct, remove them
-//		reproduce(); //Reproduce the clients that haven't gone extinct
-//		mutate(); //mutate everything
+		reproduce(); //The clients that gone extinct get replaced by the offspring of two random individuals from the same species (randomly chosen)
+		mutate(); //mutate everything
 		for(Individual individual: individuals.getData()) {
 			individual.generateCalculator(); //calculate everything
 		}
@@ -165,13 +166,40 @@ public class Neat {
 	private void removeExtinctSpecies() {
 		//We iterate backwards since species is a RandomHashSet which uses an ArrayList, and deleting is O(1) from the back
 		for(int i =species.size()-1; i>=0; i--) { 
-			if(species.size() <=1) {
-				species.get(i).goExtinct();;
+			if(species.get(i).size() <= 1) {  //If a species only has one or less individuals, it goes extinct
+				species.get(i).goExtinct();
 				species.remove(i);
 			}
 		}
 	}
 	
+	private void reproduce() {
+		RandomSelector<Species> selector = new RandomSelector<>();
+		for(Species s: species.getData()) {
+			selector.add(s, s.getScore());
+		}
+		
+		for(Individual i: individuals.getData()) {
+			if(i.getSpecies()==null) {
+				Species s = selector.random();
+				i.setGenome(s.breed());
+				s.forcePut(i);
+			}
+		}
+	}
+	
+	private void mutate() {
+		for(Individual i: individuals.getData()) {
+			i.mutate();
+		}
+	}
+	
+	public void printSpecies() {
+		System.out.println("################################################################");
+		for(Species s: this.species.getData()) {
+			System.out.println(s + " " + s.getScore() + " " + s.size());
+		}
+	}
 	
 	//Get the individual based on their index
 	public Individual getIndividual(int index) {
