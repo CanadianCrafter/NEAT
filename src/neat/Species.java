@@ -20,6 +20,7 @@ public class Species {
 	
 	
 	public boolean put(Individual individual) {
+//		System.out.println("distance: " + individual.distance(representative));
 		if(individual.distance(representative) < representative.getGenome().getNeat().getCP()) {
 			individual.setSpecies(this);
 			individuals.add(individual);

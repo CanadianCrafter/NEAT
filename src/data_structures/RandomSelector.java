@@ -35,6 +35,9 @@ public class RandomSelector <T> {
 		
 	}
 	
+	public int size() {
+		return objects.size();
+	}
 	
 	
 }

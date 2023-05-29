@@ -3,6 +3,9 @@ package visual;
 import genome.Genome;
 
 import javax.swing.*;
+
+import calculations.Calculator;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -118,8 +121,8 @@ public class Frame extends JFrame {
         buttonG.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                genome.generateCalculator();
-                System.out.println(Arrays.toString(genome.calculate(1,1,1)));
+                Calculator calculator = new Calculator(genome);
+                System.out.println(Arrays.toString(calculator.calculate(1,1,1)));
                 repaint();
             }
         });

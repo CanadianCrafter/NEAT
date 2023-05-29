@@ -15,14 +15,11 @@ public class Node implements Comparable<Node> {
 	
 	public void calculate() {
 		double sum =0;
-		System.out.print(x+": " );
 		for(Connection connection: connections) {
 			if(connection.isEnabled()) {
 				sum += connection.getWeight() * connection.getFrom().getOutput();
-				System.out.print(connection.getWeight());
 			}
 		}
-		System.out.println();
 		output = activationFunction(sum);
 	}
 	

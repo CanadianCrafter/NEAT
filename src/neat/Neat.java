@@ -154,6 +154,7 @@ public class Neat {
 		for(Species s: species.getData()) {
 			s.evaluateScore();
 		}
+//		System.out.println(species.size());
 	}
 	
 	
@@ -161,6 +162,7 @@ public class Neat {
 		for(Species s: species.getData()) {
 			s.kill(1-SURVIVOR_RATE);
 		}
+	
 	}
 	
 	private void removeExtinctSpecies() {
@@ -178,6 +180,8 @@ public class Neat {
 		for(Species s: species.getData()) {
 			selector.add(s, s.getScore());
 		}
+		
+//		System.out.println(selector.size());
 		
 		for(Individual i: individuals.getData()) {
 			if(i.getSpecies()==null) {
@@ -294,8 +298,20 @@ public class Neat {
 	}
 
 	public static void main(String[] args) {
-		Neat neat = new Neat(3,2,0);
-		new Frame(neat.emptyGenome());
+		Neat neat = new Neat(10,1,1000);
+		double input[] = new double[10];
+		
+		for(int i = 0; i< 10; i++) input[i] = Math.random();
+		
+		for(int i = 0; i< 1000; i++) {
+			for(Individual ind:neat.individuals.getData()) {
+				double score = ind.calculate(input)[0];
+				ind.setScore((score));
+			}
+			neat.evolve();
+			neat.printSpecies();
+		}
+//		new Frame(neat.emptyGenome());
 	}
 	
 
