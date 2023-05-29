@@ -34,7 +34,7 @@ public class Species {
 		individuals.add(individual);
 	}
 	
-	public void extinction() {
+	public void goExtinct() {
 		for(Individual individual : individuals.getData()) {
 			individual.setSpecies(null);
 		}
@@ -50,7 +50,7 @@ public class Species {
 	
 	public void reset() {
 		representative = individuals.randomElement();
-		extinction();
+		goExtinct();
 		individuals.clear();
 		
 		individuals.add(representative);

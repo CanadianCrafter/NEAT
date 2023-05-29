@@ -21,6 +21,7 @@ public class Neat {
 	private double WEIGHT_SHIFT_STRENGTH = 0.3;
 	private double WEIGHT_RANDOM_STRENGTH = 1;
 	
+	private double SURVIVOR_RATE = 0.8;
 	
 	private double PROBABILITY_MUTATE_CONNECTION = 0.4;
 	private double PROBABILITY_MUTATE_NODE = 0.4;
@@ -113,14 +114,14 @@ public class Neat {
 	}
 	
 	public void evolve() {
-//		generateSpecies(); //This groups the individuals into the species
-//		kill(); //Kill some percentage of the individuals
-//		removeExtinctSpecies(); //If any species goes extinct, remove them
+		generateSpecies(); //This groups the individuals into the species
+		kill(); //Kill some percentage of the individuals
+		removeExtinctSpecies(); //If any species goes extinct, remove them
 //		reproduce(); //Reproduce the clients that haven't gone extinct
 //		mutate(); //mutate everything
-//		for(Individual individual: individuals.getData()) {
-//			individual.generateCalculator(); //calculate everything
-//		}
+		for(Individual individual: individuals.getData()) {
+			individual.generateCalculator(); //calculate everything
+		}
 		
 	}
 	
@@ -155,7 +156,21 @@ public class Neat {
 	}
 	
 	
+	private void kill() {
+		for(Species s: species.getData()) {
+			s.kill(1-SURVIVOR_RATE);
+		}
+	}
 	
+	private void removeExtinctSpecies() {
+		//We iterate backwards since species is a RandomHashSet which uses an ArrayList, and deleting is O(1) from the back
+		for(int i =species.size()-1; i>=0; i--) { 
+			if(species.size() <=1) {
+				species.get(i).goExtinct();;
+				species.remove(i);
+			}
+		}
+	}
 	
 	
 	//Get the individual based on their index
