@@ -2,6 +2,7 @@ package neat;
 
 import java.util.*;
 
+import data_structures.RandomHashSet;
 import genome.ConnectionGene;
 import genome.Genome;
 import genome.NodeGene;
@@ -31,13 +32,16 @@ public class Neat {
 	private HashMap<ConnectionGene, ConnectionGene> allConnections = new HashMap<>(); 
 	private ArrayList<NodeGene> allNodes = new ArrayList<>();
 	
+	private RandomHashSet<Individual> individuals = new RandomHashSet<>();
+	private RandomHashSet<Species> species = new RandomHashSet<>();
+	
 	private int inputSize;
 	private int outputSize;
-	private int maxClients;
+	private int maxIndividuals;
 	
 	//The input and output sizes are fixed so we have to set them up here
-	public Neat(int inputSize, int outputSize, int clients) {
-		this.reset(inputSize, outputSize, clients);
+	public Neat(int inputSize, int outputSize, int individuals) {
+		this.reset(inputSize, outputSize, individuals);
 	}
 	
 	//Create an empty genome
@@ -76,13 +80,14 @@ public class Neat {
 	}
 
 	
-	public void reset(int inputSize, int outputSize, int clients) {
+	public void reset(int inputSize, int outputSize, int individuals) {
 		this.inputSize = inputSize;
 		this.outputSize = outputSize;
-		this.maxClients = clients;
+		this.maxIndividuals = individuals;
 		
 		allConnections.clear();
 		allNodes.clear();
+		this.individuals.clear();
 		
 		//inputs and outputs exist regardless of genome, so we create them here
 		for(int i = 0; i < inputSize; i++) {
@@ -97,8 +102,67 @@ public class Neat {
 			newNode.setY((i+1)/(double)(outputSize+1)); // The input nodes y-value increases so there are no repeats.
 		}
 		
+		for(int i =0; i < maxIndividuals; i++) {
+			Individual individual = new Individual();
+			individual.setGenome(emptyGenome());
+			individual.generateCalculator();
+			this.individuals.add(individual);
+			
+		}
+		
 	}
 	
+	public void evolve() {
+//		generateSpecies(); //This groups the individuals into the species
+//		kill(); //Kill some percentage of the individuals
+//		removeExtinctSpecies(); //If any species goes extinct, remove them
+//		reproduce(); //Reproduce the clients that haven't gone extinct
+//		mutate(); //mutate everything
+//		for(Individual individual: individuals.getData()) {
+//			individual.generateCalculator(); //calculate everything
+//		}
+		
+	}
+	
+	private void generateSpecies() {
+		//Reset all the species; this doesn't remove the individuals, just resets all the species classifications
+		for(Species s: species.getData()) {
+			s.reset();
+		}
+		
+		for(Individual i: individuals.getData()) {
+			if(i.getSpecies() != null) continue;
+			
+			//See if the individual fits in one of the existing species
+			boolean joinedSpecies = false;
+			for(Species s: species.getData()) {
+				if(s.put(i)) {
+					joinedSpecies = true;
+					break;
+					
+				}
+			}
+			//If the individual doesn't fit into any of the existing species, it starts its own species
+			if(!joinedSpecies) {
+				species.add(new Species(i));
+			}
+		}
+		
+		//Evaluate the score of all species
+		for(Species s: species.getData()) {
+			s.evaluateScore();
+		}
+	}
+	
+	
+	
+	
+	
+	//Get the individual based on their index
+	public Individual getIndividual(int index) {
+		return individuals.get(index);
+		
+	}
 	
 	//Creates a new Node
 	public NodeGene getNode() {
@@ -182,8 +246,8 @@ public class Neat {
 		return outputSize;
 	}
 
-	public int getMaxClients() {
-		return maxClients;
+	public int getMaxIndividuals() {
+		return maxIndividuals;
 	}
 
 	public static void main(String[] args) {
