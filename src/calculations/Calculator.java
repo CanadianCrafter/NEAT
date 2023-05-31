@@ -15,7 +15,6 @@ public class Calculator {
 		RandomHashSet<NodeGene> nodes = genome.getNodes();
 		RandomHashSet<ConnectionGene> connections = genome.getConnections();
 		
-		
 		HashMap<Integer, Node> nodeHashMap = new HashMap<>();
 		
 		for(NodeGene n: nodes.getData()) {
@@ -54,11 +53,8 @@ public class Calculator {
 			
 			nodeTo.getConnections().add(connection);
 			
-			
 		}
 
-		
-		
 	}
 	
 	public double[] calculate(double... input) {

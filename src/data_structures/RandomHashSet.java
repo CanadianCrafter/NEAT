@@ -40,7 +40,7 @@ public class RandomHashSet<T> {
 	
 	//Adds a gene in a sorted fashion
 	public void addSorted(Gene object) {
-		for(int i =0 ;i< this.size(); i++) {
+		for(int i =0 ;i< data.size(); i++) {
 			int innovationNumber = ((Gene)data.get(i)).getInnovationNumber();
 			if(object.getInnovationNumber() < innovationNumber) {
 				data.add(i, (T)object);

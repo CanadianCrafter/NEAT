@@ -18,7 +18,6 @@ public class ConnectionGene extends Gene{
 	
 	
 	public ConnectionGene(NodeGene from, NodeGene to) {
-		super(-1); //temporarily set the innovation number to -1
 		this.from = from;
 		this.to = to;
 	}
@@ -67,8 +66,8 @@ public class ConnectionGene extends Gene{
 	//It does not check whether the innovationNumbers are the same since by our definition they are the same
 	public boolean equals(Object object) {
 		if(!(object instanceof ConnectionGene)) return false;
-		ConnectionGene connectionGene = (ConnectionGene) object;
-		return (from.equals(connectionGene.from) && to.equals(connectionGene.to));
+		ConnectionGene connectionGene2 = (ConnectionGene) object;
+		return (from.equals(connectionGene2.from) && to.equals(connectionGene2.to));
 	}
 	
 	//Assuming we don't go over out maximum number of nodes, 

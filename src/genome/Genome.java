@@ -46,7 +46,6 @@ public class Genome {
 		double totalWeightDiff = 0;
 		double weightDiff = 0;
 		
-//		System.out.println("genome1 size: " + genome1.getConnections().size() + " genome2 size: " + genome2.getConnections().size());
 		while(index1 < genome1.getConnections().size() && index2 < genome2.getConnections().size()) {
 			
 			ConnectionGene gene1 = genome1.getConnections().get(index1);
@@ -89,7 +88,6 @@ public class Genome {
 		
 		//We return the compatibility distance of different structures in NEAT as a linear combination of the 
 		//number of excess E, and disjoint D genes, as well as the average weight differences of the matching genes, W(bar), including disabled genes,
-//		System.out.println("disjoint: " + numDisjoint + " numExcess: " + numExcess + " weight diff: " + weightDiff);
 		return neat.getC1() * numDisjoint / N + neat.getC2() * numExcess / N + neat.getC3() * weightDiff;
 	}
 	
@@ -189,6 +187,8 @@ public class Genome {
 			NodeGene node1 = nodes.randomElement();
 			NodeGene node2 = nodes.randomElement();
 			
+			if(node1==null || node2==null) continue;
+			
 			//Try again if both nodes have the same X value
 			if(node1.getX()==node2.getX()) { //This also ensures that node1 and node2 aren't the same node
 				continue;
@@ -200,7 +200,7 @@ public class Genome {
 				node1 = tempNode;
 			}
 			
-			ConnectionGene connection = new ConnectionGene(node1,  node2);
+			ConnectionGene connection = new ConnectionGene(node1,node2);
 			
 			//Try again if the connection already exists.
 			if(connections.contains(connection)) {

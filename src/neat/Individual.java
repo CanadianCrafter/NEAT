@@ -30,6 +30,7 @@ public class Individual {
 		getGenome().mutate();
 	}
 	
+
 	public Calculator getCalculator() {
 		return calculator;
 	}

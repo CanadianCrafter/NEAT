@@ -59,6 +59,7 @@ public class Neat {
 	
 	public ConnectionGene copyConnection(ConnectionGene connection) {
 		ConnectionGene connectionGene = new ConnectionGene(connection.getFrom(), connection.getTo());
+		connectionGene.setInnovationNumber(connection.getInnovationNumber());
 		connectionGene.setWeight(connection.getWeight());
 		connectionGene.setEnabled(connection.isEnabled());
 		return connectionGene;
