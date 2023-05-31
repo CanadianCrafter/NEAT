@@ -25,9 +25,9 @@ public class Neat {
 	private double SURVIVOR_RATE = 0.8;
 	
 	private double PROBABILITY_MUTATE_CONNECTION = 0.01;
-	private double PROBABILITY_MUTATE_NODE = 0.003;
-	private double PROBABILITY_MUTATE_WEIGHT_SHIFT = 0.002;
-	private double PROBABILITY_MUTATE_WEIGHT_RANDOM = 0.002;
+	private double PROBABILITY_MUTATE_NODE = 0.1;
+	private double PROBABILITY_MUTATE_WEIGHT_SHIFT = 0.02;
+	private double PROBABILITY_MUTATE_WEIGHT_RANDOM = 0.02;
 	private double PROBABILITY_MUTATE_TOGGLE_CONNECTION = 0;
 	
 	//The same connection matches to itself, this is simply to leverage a map's ease of use.	
@@ -202,6 +202,10 @@ public class Neat {
 		System.out.println("################################################################");
 		for(Species s: this.species.getData()) {
 			System.out.println(s + " " + s.getScore() + " " + s.size());
+			for(int i =0; i < s.getIndividuals().size(); i++) {
+				
+				if(0.1 >Math.random())System.out.println("Num Nodes: " + s.getIndividuals().get(i).getGenome().getNodes().size() + " Num connections: "+ s.getIndividuals().get(i).getGenome().getConnections().size());
+			}
 		}
 	}
 	
@@ -303,7 +307,7 @@ public class Neat {
 		
 		for(int i = 0; i< 10; i++) input[i] = Math.random();
 		
-		for(int i = 0; i< 1000; i++) {
+		for(int i = 0; i< 30; i++) {
 			for(Individual ind:neat.individuals.getData()) {
 				double score = ind.calculate(input)[0];
 				ind.setScore((score));
