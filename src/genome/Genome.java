@@ -225,9 +225,18 @@ public class Genome {
 		NodeGene from = connection.getFrom();
 		NodeGene to = connection.getTo();
 		
-		NodeGene middle = neat.getNode();
-		middle.setX((from.getX()+to.getX())/2);
-		middle.setY((from.getY()+to.getY())/2 + Math.random() * 0.1 - 0.05);
+		int replaceIndex = neat.getReplaceIndex(from,to);
+		NodeGene middle;
+		if(replaceIndex == 0) { //There is no replace index, so we have to create our own new node for a new innovation number
+			middle = neat.getNode();
+			middle.setX((from.getX()+to.getX())/2);
+			middle.setY((from.getY()+to.getY())/2 + Math.random() * 0.1 - 0.05);
+			neat.setReplaceIndex(from, to, middle.getInnovationNumber());
+		}
+		else {
+			middle = neat.getNode(replaceIndex);
+		}
+
 		
 		ConnectionGene connection1 = neat.getConnection(from, middle);
 		ConnectionGene connection2 = neat.getConnection(middle, to);

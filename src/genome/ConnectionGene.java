@@ -16,6 +16,10 @@ public class ConnectionGene extends Gene{
 	private double weight; //every connection has a weight
 	private boolean enabled = true; //connections can be enabled or not
 	
+	//if we replace this connection by inserting a new node in between it, forming two new connections
+	//the node in the middle should have this index in the innovation number
+	private int replaceIndex; 
+		
 	
 	public ConnectionGene(NodeGene from, NodeGene to) {
 		this.from = from;
@@ -62,6 +66,14 @@ public class ConnectionGene extends Gene{
 		this.enabled = enabled;
 	}
 	
+	public int getReplaceIndex() {
+		return replaceIndex;
+	}
+
+	public void setReplaceIndex(int replaceIndex) {
+		this.replaceIndex = replaceIndex;
+	}
+
 	//The equals function only checks if the to and from nodes are the same
 	//It does not check whether the innovationNumbers are the same since by our definition they are the same
 	public boolean equals(Object object) {

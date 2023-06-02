@@ -203,17 +203,24 @@ public class Neat {
 		System.out.println("################################################################");
 		for(Species s: this.species.getData()) {
 			System.out.println(s + " " + s.getScore() + " " + s.size());
-			for(int i =0; i < s.getIndividuals().size(); i++) {
-				
-				if(0.1 >Math.random())System.out.println("Num Nodes: " + s.getIndividuals().get(i).getGenome().getNodes().size() + " Num connections: "+ s.getIndividuals().get(i).getGenome().getConnections().size());
-			}
+//			for(int i =0; i < s.getIndividuals().size(); i++) {
+//				if(0.1 >Math.random())System.out.println("Num Nodes: " + s.getIndividuals().get(i).getGenome().getNodes().size() + " Num connections: "+ s.getIndividuals().get(i).getGenome().getConnections().size());
+//			}
 		}
 	}
 	
 	//Get the individual based on their index
 	public Individual getIndividual(int index) {
 		return individuals.get(index);
-		
+	}
+	
+	public void setReplaceIndex(NodeGene node1, NodeGene node2, int index) {
+    	allConnections.get(new ConnectionGene(node1, node2)).setReplaceIndex(index);
+    }
+	public int getReplaceIndex(NodeGene node1, NodeGene node2) {
+		ConnectionGene connection = allConnections.get(new ConnectionGene(node1, node2));
+		if(connection==null) return 0; //0 means there is no replace index so we need to create a new one
+		return connection.getReplaceIndex();
 	}
 	
 	//Creates a new Node
@@ -308,7 +315,7 @@ public class Neat {
 		
 		for(int i = 0; i< 10; i++) input[i] = Math.random();
 		
-		for(int i = 0; i< 30; i++) {
+		for(int i = 0; i< 100; i++) {
 			for(Individual ind:neat.individuals.getData()) {
 				double score = ind.calculate(input)[0];
 				ind.setScore((score));
