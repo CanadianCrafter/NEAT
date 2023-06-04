@@ -24,13 +24,14 @@ public class Grid {
 		
 	}
 	
-	private void initialize() {
+	public static void initialize() {
 		gameBoard = new boolean[BOARD_HEIGHT][BOARD_WIDTH];
+		snake = new LinkedList<Coords>();
 		
 		direction = 'r';
-		snake.addLast(new Coords(3,4));
 		snake.addLast(new Coords(3,3));
 		snake.addLast(new Coords(3,2));
+		snake.addLast(new Coords(3,1));
 		
 		for(int i = 0; i<snake.size();i++) {
 			Coords coords = snake.get(i);
@@ -106,8 +107,6 @@ public class Grid {
 	}
 	
 	private static void printBoard() {
-		System.out.println(direction);
-		
 		for(int row = 0; row<BOARD_HEIGHT;row++) {
 			for(int col = 0; col<BOARD_WIDTH; col++) {
 				if(apple.row==row&&apple.col==col) {

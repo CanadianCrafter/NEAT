@@ -25,7 +25,7 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 	private Color backgroundColour = Color.GRAY; 
 	private Color appleColour = Color.RED; 
 	
-	private final static int speed = 500;
+	private final static int speed = 200;
 	private Timer animationTimer = new Timer(speed, this); // the stop motion animation runs at 10 fps or every 0.1 seconds
 	private int animationIndex = 0; //timing for the animations
 	private final int NUM_ITERATIONS = 10000;
@@ -33,6 +33,7 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 	//menubar
 	private static JMenuBar mb = new JMenuBar();
 	private static JMenu menu = new JMenu();
+	private static JMenuItem restart;
 	private static JMenuItem exit;
 	
 	public static Grid grid;
@@ -88,15 +89,19 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 		menu = new JMenu("Menu");
 		
 		// menu items
+		restart = new JMenuItem("Restart");
 		exit = new JMenuItem("Exit");
 		
 
 		// add to action listener for the menu items
+		restart.addActionListener(this);
 		exit.addActionListener(this);
+		
 		
 
 		window.setJMenuBar(mb); // add menu bar
 		mb.add(menu); // add menu to menubar
+		menu.add(restart);
 		menu.add(exit);
 
 	}
@@ -189,6 +194,12 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 			}
 			animationIndex++;
 				
+		}
+		//restarts game
+		else if (event.getSource() == restart) {
+			Grid.initialize();
+			animationTimer.start(); // starts timer for the animation
+			animationIndex = 0;		
 		}
 		// exits 
 		else if (event.getSource() == exit) {
