@@ -1,96 +1,103 @@
 package snake;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+
 public class Grid {
-	private final static int BOARD_WIDTH = 80;
-	private final static int BOARD_HEIGHT = 80;
-	private final static int MARGIN = 4;
+	private final static int BOARD_WIDTH = 10;
+	private final static int BOARD_HEIGHT = 10;
 	public static boolean gameBoard[][];
-	private static boolean tempBoard[][];
-	private static boolean originalBoard[][];
+	
+	private static char direction; //l,r,u,d for left, right, up, down.
+	private final static HashMap<Character,Integer[]> directionVectors = new HashMap<>(); //direction, {row, col}
+	
+	private static LinkedList<Coords> snake = new LinkedList<Coords>();
+	
+	private static Coords apple;
+	
+	private static int score;
+	private static boolean isAlive;
+	private static boolean hasWon;
+	
 	
 	public Grid() {
-		gameBoard = new boolean[BOARD_HEIGHT+2*MARGIN][BOARD_WIDTH+2*MARGIN];
-		tempBoard = new boolean[BOARD_HEIGHT+2*MARGIN][BOARD_WIDTH+2*MARGIN];
-		originalBoard = new boolean[BOARD_HEIGHT+2*MARGIN][BOARD_WIDTH+2*MARGIN];
+		initialize();
 		
 	}
 	
-	public static void updateGrid() {
-		for(int row = 0; row < BOARD_HEIGHT+2*MARGIN; row++) {
-			for(int col = 0; col < BOARD_WIDTH+2*MARGIN; col++) {
-				if(row==0 || row == BOARD_HEIGHT+2*MARGIN-1 || col==0 || col == BOARD_HEIGHT+2*MARGIN-1) {
-					tempBoard[row][col]=false;
+	private void initialize() {
+		gameBoard = new boolean[BOARD_HEIGHT][BOARD_WIDTH];
+		
+		direction = 'r';
+		snake.addLast(new Coords(4,3));
+		snake.addLast(new Coords(3,3));
+		snake.addLast(new Coords(2,3));
+		
+		for(int i = 0; i<snake.size();i++) {
+			Coords coords = snake.get(i);
+			gameBoard[coords.row][coords.col]=true;
+		}
+		
+		directionVectors.put('l', new Integer[] {0,1});
+		directionVectors.put('r', new Integer[] {0,-1});
+		directionVectors.put('u', new Integer[] {-1,0});
+		directionVectors.put('d', new Integer[] {1,0});
+		
+		generateApple();
+		
+		score = 0;
+		isAlive=true;
+		hasWon=false;
+		
+	}
+
+	private static void generateApple() {
+		int openSpaces = BOARD_HEIGHT*BOARD_WIDTH-snake.size();
+		int appleIndex = (int)(openSpaces * Math.random());
+		
+		int index = -1; 
+		//find the appleIndex'th free square
+		for(int row = 0; row<BOARD_HEIGHT;row++) {
+			for(int col = 0; col<BOARD_WIDTH; col++) {
+				if(!gameBoard[row][col]) {
+					index++;
+					if(index==appleIndex) {
+						apple=new Coords(row, col);
+						return;
+					}
 				}
-				else {
-					int aliveNeighbours = 0;
-					for(int rowMod = -1; rowMod <= 1; rowMod++) {
-						for(int colMod = -1; colMod <=1 ; colMod++) {
-							if(rowMod==0 && colMod==0) continue;
-							else if(gameBoard[row+rowMod][col+colMod]) aliveNeighbours++;
 								
-						}
-					}
-					if(gameBoard[row][col]) {
-						if (aliveNeighbours == 2 || aliveNeighbours == 3) {
-							tempBoard[row][col]=true;
-						}
-						else {
-							tempBoard[row][col]=false;
-						}
-					}
-					else {
-						if (aliveNeighbours == 3) {
-							tempBoard[row][col]=true;
-						}
-						else {
-							tempBoard[row][col]=false;
-						}
-					}
-						
-				}
-
 			}
 		}
 		
-		for(int row = 0; row < BOARD_HEIGHT+2*MARGIN; row++) {
-			for(int col = 0; col < BOARD_WIDTH+2*MARGIN; col++) {
-				gameBoard[row][col] = tempBoard[row][col];
-
-			}
-		}
+		//WIN
+		hasWon=true;
+		
 		
 	}
-	
-	public static void wipeGrid() {	
-		for(int row = 0; row < BOARD_HEIGHT+2*MARGIN; row++) {
-			for(int col = 0; col < BOARD_WIDTH+2*MARGIN; col++) {
-				gameBoard[row][col] = tempBoard[row][col] = false;
 
-			}
+	public static void updateGrid() {
+		
+		int newRow = snake.getFirst().row+directionVectors.get(direction)[0];
+		int newCol = snake.getFirst().col+directionVectors.get(direction)[1];
+		
+		if(newRow >= BOARD_HEIGHT || newRow<0 ||newCol < 0|| newCol >= BOARD_WIDTH) {
+			//DEAD
+			isAlive=false;
 		}
 		
-	}
-	
-	public static void saveGrid() {	
-		for(int row = 0; row < BOARD_HEIGHT+2*MARGIN; row++) {
-			for(int col = 0; col < BOARD_WIDTH+2*MARGIN; col++) {
-				originalBoard[row][col] = gameBoard[row][col];
-
-			}
-		}
+		snake.addFirst(new Coords(newRow,newCol));
 		
-	}
-	
-	public static void resetGrid() {	
-		for(int row = 0; row < BOARD_HEIGHT+2*MARGIN; row++) {
-			for(int col = 0; col < BOARD_WIDTH+2*MARGIN; col++) {
-				gameBoard[row][col] = originalBoard[row][col];
-
-			}
+		//if the snake eats an apple, the tail doesn't shrink
+		if(newRow==apple.row && newCol == apple.col) {
+			generateApple();
+			score++;
 		}
-		
+		else {
+			snake.removeLast();
+		}
+				
 	}
-	
 	
 	
 	public static boolean[][] getGameBoard() {
@@ -99,22 +106,40 @@ public class Grid {
 	public static void setGameBoard(boolean[][] gameBoard) {
 		Grid.gameBoard = gameBoard;
 	}
-	public static boolean[][] getTempBoard() {
-		return tempBoard;
-	}
-	public static void setTempBoard(boolean[][] tempBoard) {
-		Grid.tempBoard = tempBoard;
-	}
 	public static int getBoardWidth() {
 		return BOARD_WIDTH;
 	}
 	public static int getBoardHeight() {
 		return BOARD_HEIGHT;
 	}
+	public static char getDirection() {
+		return direction;
+	}
+	public static void setDirection(char direction) {
+		Grid.direction = direction;
+	}
+	public static int getScore() {
+		return score;
+	}
+	public static void setScore(int score) {
+		Grid.score = score;
+	}
+
 	@Override
 	public String toString() {
 		return "Grid [getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
 				+ "]";
+	}
+	
+	static class Coords {
+		//Not x,y, coords but 2D array indices
+		int row; 
+		int col; 
+		public Coords(int row, int col) {
+			this.row = row;
+			this.col = col;
+		}
+
 	}
 	
 	
@@ -123,3 +148,4 @@ public class Grid {
 	
 	
 }
+

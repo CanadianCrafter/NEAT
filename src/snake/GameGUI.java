@@ -293,7 +293,7 @@ public class GameGUI extends JPanel implements ActionListener, MouseListener, Mo
 	public void actionPerformed(ActionEvent event) {
 		// resets the canvas
 		if (event.getSource() == wipe) {
-			grid.wipeGrid();
+//			grid.wipeGrid();
 			for(int row = 0; row < BOARD_HEIGHT; row++) {
 				for(int col = 0; col < BOARD_WIDTH; col++) {
 					gridColour[row][col] = null;
@@ -313,7 +313,7 @@ public class GameGUI extends JPanel implements ActionListener, MouseListener, Mo
 		else if (event.getSource() == play) {
 			animationTimer.start(); // starts timer for the animation
 			animationIndex = 0;
-			grid.saveGrid();
+//			grid.saveGrid();
 		}
 		//stops the animation
 		else if (event.getSource() == pause) {
@@ -322,7 +322,7 @@ public class GameGUI extends JPanel implements ActionListener, MouseListener, Mo
 		//stops the animation
 		else if (event.getSource() == reset) {
 			animationTimer.stop(); // stops timer for the animation
-			grid.resetGrid();
+//			grid.resetGrid();
 			updateGrid();
 			repaint();
 		}
