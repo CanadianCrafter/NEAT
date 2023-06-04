@@ -25,7 +25,7 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 	private Color backgroundColour = Color.GRAY; 
 	private Color appleColour = Color.RED; 
 	
-	private final static int speed = 3000;
+	private final static int speed = 500;
 	private Timer animationTimer = new Timer(speed, this); // the stop motion animation runs at 10 fps or every 0.1 seconds
 	private int animationIndex = 0; //timing for the animations
 	private final int NUM_ITERATIONS = 10000;
@@ -178,7 +178,6 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 		if (event.getSource() == animationTimer) {
 			// each 1/10 second, update the board
 			if(animationIndex<NUM_ITERATIONS) {
-				grid.updateGrid();
 				updateGrid();
 				repaint();
 			}

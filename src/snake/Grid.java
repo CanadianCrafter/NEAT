@@ -28,9 +28,9 @@ public class Grid {
 		gameBoard = new boolean[BOARD_HEIGHT][BOARD_WIDTH];
 		
 		direction = 'r';
-		snake.addLast(new Coords(3,2));
-		snake.addLast(new Coords(3,3));
 		snake.addLast(new Coords(3,4));
+		snake.addLast(new Coords(3,3));
+		snake.addLast(new Coords(3,2));
 		
 		for(int i = 0; i<snake.size();i++) {
 			Coords coords = snake.get(i);
@@ -44,7 +44,7 @@ public class Grid {
 		
 		generateApple();
 		
-		score = 0;
+		score = 3;
 		gameState = "playing";
 		
 	}
@@ -82,7 +82,7 @@ public class Grid {
 		int tailRow = snake.getLast().row;
 		int tailCol = snake.getLast().col;
 		
-		if(newRow >= BOARD_HEIGHT || newRow<0 ||newCol < 0|| newCol >= BOARD_WIDTH) {
+		if(newRow >= BOARD_HEIGHT || newRow<0 ||newCol < 0|| newCol >= BOARD_WIDTH || gameBoard[newRow][newCol]) {
 			//DEAD
 			gameState = "lose";
 			return;
