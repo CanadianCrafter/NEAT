@@ -198,8 +198,10 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 		//restarts game
 		else if (event.getSource() == restart) {
 			Grid.initialize();
+			updateGrid();
 			animationTimer.start(); // starts timer for the animation
 			animationIndex = 0;		
+			updateGrid();
 		}
 		// exits 
 		else if (event.getSource() == exit) {

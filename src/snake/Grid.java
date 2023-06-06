@@ -20,6 +20,10 @@ public class Grid {
 	
 	
 	public Grid() {
+		directionVectors.put('l', new Integer[] {0,-1});
+		directionVectors.put('r', new Integer[] {0, 1});
+		directionVectors.put('u', new Integer[] {-1,0});
+		directionVectors.put('d', new Integer[] {1, 0});
 		initialize();
 		
 	}
@@ -37,12 +41,7 @@ public class Grid {
 			Coords coords = snake.get(i);
 			gameBoard[coords.row][coords.col]=true;
 		}
-		
-		directionVectors.put('l', new Integer[] {0,-1});
-		directionVectors.put('r', new Integer[] {0, 1});
-		directionVectors.put('u', new Integer[] {-1,0});
-		directionVectors.put('d', new Integer[] {1, 0});
-		
+
 		generateApple();
 		
 		score = 3;
@@ -88,8 +87,7 @@ public class Grid {
 			gameState = "lose";
 			return;
 		}
-		
-		//CHECK IF SNAKE BUMPS INTO ITSELF
+	
 		
 		snake.addFirst(new Coords(newRow,newCol));
 		gameBoard[newRow][newCol]=true;
@@ -147,7 +145,11 @@ public class Grid {
 		return direction;
 	}
 	public static void setDirection(char direction) {
-		Grid.direction = direction;
+		if((Grid.direction=='u'&&direction!='d')||(Grid.direction=='r'&&direction!='l')
+				||(Grid.direction=='d'&&direction!='u')||(Grid.direction=='l'&&direction!='r')) {
+			Grid.direction = direction;
+		}
+		
 	}
 	public static int getScore() {
 		return score;
