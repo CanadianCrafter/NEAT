@@ -237,18 +237,49 @@ public class Neat {
 	}
 	
 	
+
+	public static void main(String[] args) {
+		Neat neat = new Neat(10,1,1000);
+		double input[] = new double[10];
+		
+		for(int i = 0; i< 10; i++) input[i] = Math.random();
+		
+		for(int i = 0; i< 100; i++) {
+			for(Individual ind:neat.individuals.getData()) {
+				double score = ind.calculate(input)[0];
+				ind.setScore((score));
+			}
+			neat.evolve();
+			neat.printSpecies();
+		}
+//		new Frame(neat.emptyGenome());
+	}
+	
+
 	public double getC1() {
 		return C1;
+	}
+
+	public void setC1(double c1) {
+		C1 = c1;
 	}
 
 	public double getC2() {
 		return C2;
 	}
 
+	public void setC2(double c2) {
+		C2 = c2;
+	}
+
 	public double getC3() {
 		return C3;
 	}
-	
+
+	public void setC3(double c3) {
+		C3 = c3;
+	}
+
 	public double getCP() {
 		return CP;
 	}
@@ -261,34 +292,70 @@ public class Neat {
 		return WEIGHT_SHIFT_STRENGTH;
 	}
 
+	public void setWEIGHT_SHIFT_STRENGTH(double wEIGHT_SHIFT_STRENGTH) {
+		WEIGHT_SHIFT_STRENGTH = wEIGHT_SHIFT_STRENGTH;
+	}
+
 	public double getWEIGHT_RANDOM_STRENGTH() {
 		return WEIGHT_RANDOM_STRENGTH;
 	}
-	
+
+	public void setWEIGHT_RANDOM_STRENGTH(double wEIGHT_RANDOM_STRENGTH) {
+		WEIGHT_RANDOM_STRENGTH = wEIGHT_RANDOM_STRENGTH;
+	}
+
+	public double getSURVIVOR_RATE() {
+		return SURVIVOR_RATE;
+	}
+
+	public void setSURVIVOR_RATE(double sURVIVOR_RATE) {
+		SURVIVOR_RATE = sURVIVOR_RATE;
+	}
+
 	public double getPROBABILITY_MUTATE_CONNECTION() {
 		return PROBABILITY_MUTATE_CONNECTION;
+	}
+
+	public void setPROBABILITY_MUTATE_CONNECTION(double pROBABILITY_MUTATE_CONNECTION) {
+		PROBABILITY_MUTATE_CONNECTION = pROBABILITY_MUTATE_CONNECTION;
 	}
 
 	public double getPROBABILITY_MUTATE_NODE() {
 		return PROBABILITY_MUTATE_NODE;
 	}
 
+	public void setPROBABILITY_MUTATE_NODE(double pROBABILITY_MUTATE_NODE) {
+		PROBABILITY_MUTATE_NODE = pROBABILITY_MUTATE_NODE;
+	}
+
 	public double getPROBABILITY_MUTATE_WEIGHT_SHIFT() {
 		return PROBABILITY_MUTATE_WEIGHT_SHIFT;
+	}
+
+	public void setPROBABILITY_MUTATE_WEIGHT_SHIFT(double pROBABILITY_MUTATE_WEIGHT_SHIFT) {
+		PROBABILITY_MUTATE_WEIGHT_SHIFT = pROBABILITY_MUTATE_WEIGHT_SHIFT;
 	}
 
 	public double getPROBABILITY_MUTATE_WEIGHT_RANDOM() {
 		return PROBABILITY_MUTATE_WEIGHT_RANDOM;
 	}
 
+	public void setPROBABILITY_MUTATE_WEIGHT_RANDOM(double pROBABILITY_MUTATE_WEIGHT_RANDOM) {
+		PROBABILITY_MUTATE_WEIGHT_RANDOM = pROBABILITY_MUTATE_WEIGHT_RANDOM;
+	}
+
 	public double getPROBABILITY_MUTATE_TOGGLE_CONNECTION() {
 		return PROBABILITY_MUTATE_TOGGLE_CONNECTION;
+	}
+
+	public void setPROBABILITY_MUTATE_TOGGLE_CONNECTION(double pROBABILITY_MUTATE_TOGGLE_CONNECTION) {
+		PROBABILITY_MUTATE_TOGGLE_CONNECTION = pROBABILITY_MUTATE_TOGGLE_CONNECTION;
 	}
 
 	public static int getMaxNodes() {
 		return MAX_NODES;
 	}
-
+	
 	public HashMap<ConnectionGene, ConnectionGene> getAllConnections() {
 		return allConnections;
 	}
@@ -309,22 +376,6 @@ public class Neat {
 		return maxIndividuals;
 	}
 
-	public static void main(String[] args) {
-		Neat neat = new Neat(10,1,1000);
-		double input[] = new double[10];
-		
-		for(int i = 0; i< 10; i++) input[i] = Math.random();
-		
-		for(int i = 0; i< 100; i++) {
-			for(Individual ind:neat.individuals.getData()) {
-				double score = ind.calculate(input)[0];
-				ind.setScore((score));
-			}
-			neat.evolve();
-			neat.printSpecies();
-		}
-//		new Frame(neat.emptyGenome());
-	}
 	
 
 }
