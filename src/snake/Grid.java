@@ -3,12 +3,15 @@ package snake;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import neat.Individual;
+
 public class Grid {
 	private final static int BOARD_WIDTH = 10;
 	private final static int BOARD_HEIGHT = 10;
 	public static boolean gameBoard[][];
 	
-	private static char direction; //l,r,u,d for left, right, up, down.
+	private static int directionIndex; //l,r,u,d for left, right, up, down.
+	private static char directions[] = {'u','r','d','l'};
 	private final static HashMap<Character,Integer[]> directionVectors = new HashMap<>(); //direction, {row, col}
 	
 	private static LinkedList<Coords> snake = new LinkedList<Coords>();
@@ -32,7 +35,7 @@ public class Grid {
 		gameBoard = new boolean[BOARD_HEIGHT][BOARD_WIDTH];
 		snake = new LinkedList<Coords>();
 		
-		direction = 'r';
+		directionIndex = 1;
 		snake.addLast(new Coords(3,3));
 		snake.addLast(new Coords(3,2));
 		snake.addLast(new Coords(3,1));
@@ -76,8 +79,8 @@ public class Grid {
 	public static void updateGrid() {
 		printBoard();		
 		
-		int newRow = snake.getFirst().row+directionVectors.get(direction)[0];
-		int newCol = snake.getFirst().col+directionVectors.get(direction)[1];
+		int newRow = snake.getFirst().row+directionVectors.get(directions[directionIndex])[0];
+		int newCol = snake.getFirst().col+directionVectors.get(directions[directionIndex])[1];
 		
 		int tailRow = snake.getLast().row;
 		int tailCol = snake.getLast().col;
@@ -102,6 +105,30 @@ public class Grid {
 			gameBoard[tailRow][tailCol]=false;
 		}
 				
+	}
+	
+	public static void aiMove(Individual individual) {
+		double output[] = individual.calculate(aiInput());
+		
+		//get the maximum from the output (the chosen action)
+		//index 0 is turn left, index 1 is go straight, index 2 is turn left
+		//(Having only three outputs (relative direction) compared to north east south west's four
+		//might increase effectiveness??? will test later
+		int index = 0;
+		for(int i = 1; i< output.length; i++) {
+			if(output[i]>output[index]) {
+				index=i;
+			}
+		}
+		int directionChange = index-1;
+		directionIndex = ((((directionIndex+directionChange)%4)+4)%4);
+		
+		
+	}
+	
+	public static double[] aiInput() {
+		
+		return null;
 	}
 	
 	private static void printBoard() {
@@ -141,13 +168,12 @@ public class Grid {
 	public static int getBoardHeight() {
 		return BOARD_HEIGHT;
 	}
-	public static char getDirection() {
-		return direction;
+	public static int getDirectionIndex() {
+		return directionIndex;
 	}
-	public static void setDirection(char direction) {
-		if((Grid.direction=='u'&&direction!='d')||(Grid.direction=='r'&&direction!='l')
-				||(Grid.direction=='d'&&direction!='u')||(Grid.direction=='l'&&direction!='r')) {
-			Grid.direction = direction;
+	public static void setDirectionIndex(int directionIndex) {
+		if((((directionIndex+2)%4)+4)%4!=directionIndex){
+			Grid.directionIndex=directionIndex;
 		}
 		
 	}

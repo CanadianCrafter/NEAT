@@ -218,13 +218,13 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 	@Override
 	public void keyPressed(KeyEvent key) {
 		if (key.getKeyCode() == KeyEvent.VK_UP) {
-			Grid.setDirection('u');
+			Grid.setDirectionIndex(0);
 		} else if (key.getKeyCode() == KeyEvent.VK_RIGHT) {
-			Grid.setDirection('r');
+			Grid.setDirectionIndex(1);
 		} else if (key.getKeyCode() == KeyEvent.VK_DOWN) {
-			Grid.setDirection('d');
+			Grid.setDirectionIndex(2);
 		} else if (key.getKeyCode() == KeyEvent.VK_LEFT) {
-			Grid.setDirection('l');
+			Grid.setDirectionIndex(3);
 		}
 		
 	}

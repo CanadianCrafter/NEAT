@@ -7,7 +7,7 @@ public class SnakeEvolver {
 	
 	private static int NUM_GENERATIONS = 200;
 	
-	public static void rateClient(Grid board, Individual individual) {
+	public static void rateIndividual(Grid board, Individual individual) {
 		board.initialize();
 		
 		int iteration = 0;
@@ -16,7 +16,7 @@ public class SnakeEvolver {
 		int snakeSize = 0;
 		while(iteration< 1000 && iterationsWithoutApples < 20 && board.getGameState().equals("playing")) {
 			iteration++;
-			//MOVE Snake
+			board.aiMove(individual);
 			if(board.getScore() != snakeSize) { //Snake just grew
 				iterationsWithoutApples++;
 				snakeSize = board.getScore();
@@ -32,7 +32,7 @@ public class SnakeEvolver {
 	
 	public static void evolve(Grid board, Neat neat) {
 		for(int i =0; i < neat.getMaxIndividuals();i++) {
-			rateClient(board, neat.getIndividual(i));
+			rateIndividual(board, neat.getIndividual(i));
 		}
 		neat.evolve();
 	}
@@ -51,13 +51,18 @@ public class SnakeEvolver {
 		
 		//initialize
 		for(int i = 0; i< neat.getMaxIndividuals();i++) {
-			rateClient(game, neat.getIndividual(i));
+			rateIndividual(game, neat.getIndividual(i));
 		}
 		
 		for(int i = 0; i < NUM_GENERATIONS; i++) {
 			System.out.println("########################" + i + "########################");
 			evolve(game, neat);
 			neat.printSpecies();
+			
+		}
+		
+		for(int i = 0; i< neat.getMaxIndividuals();i++) {
+			rateIndividual(game, neat.getIndividual(i));
 		}
 		
 	}
