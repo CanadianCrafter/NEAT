@@ -40,7 +40,7 @@ public class SnakeEvolver {
 	
 	public static void main(String args[]) {
 		Grid game = new Grid();
-		Neat neat = new Neat(4,3,1000); //modify the input to contain more information
+		Neat neat = new Neat(32,3,1000); //modify the input to contain more information
 		
 		neat.setCP(3);
 		neat.setPROBABILITY_MUTATE_CONNECTION(0.3);

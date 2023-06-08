@@ -10,7 +10,7 @@ public class Grid {
 	private final static int BOARD_HEIGHT = 10;
 	public static boolean gameBoard[][];
 	
-	private static int directionIndex; //l,r,u,d for left, right, up, down.
+	private static int directionIndex; //0 for up, 1 for right, 2 for down, 3 for left
 	private static char directions[] = {'u','r','d','l'};
 	private final static HashMap<Character,Integer[]> directionVectors = new HashMap<>(); //direction, {row, col}
 	
@@ -127,6 +127,76 @@ public class Grid {
 	}
 	
 	public static double[] aiInput() {
+		double input[] = new double[32];
+		
+		//For N, E, S, W, NE, SE, SW, NW, we calculate the distance to wall, if there is an apple, and is there a part of a snake
+		
+		int headRow = snake.getFirst().getRow();
+		int headCol = snake.getFirst().getCol();
+		
+		//Calculate North Direction
+		input[0] = headRow;
+		input[1] = (headCol == apple.getCol() && apple.getRow() <= headRow) ? Math.abs(apple.getRow() - headRow) : -1;
+		for(int i = headRow -1; i >= 0; i--) {
+			if(gameBoard[i][headCol]) {
+				input[2]=Math.abs(i-headRow);
+			}
+		}
+		
+		//Calculate East Direction
+		input[6] = BOARD_WIDTH - headCol-1;
+		input[7] = (headRow == apple.getRow() && apple.getCol() >= headCol) ? Math.abs(apple.getCol() - headCol) : -1;
+		for(int i = headCol + 1; i < BOARD_WIDTH; i++) {
+			if(gameBoard[headRow][i]) {
+				input[8]=Math.abs(i-headCol);
+			}
+		}
+		
+		//Calculate South Direction
+		input[12] = BOARD_HEIGHT - headRow -1;
+		input[13] = (headCol == apple.getCol() && apple.getRow() >= headRow) ? Math.abs(apple.getRow() - headRow) : -1;
+		for(int i = headRow +1; i < BOARD_HEIGHT; i++) {
+			if(gameBoard[i][headCol]) {
+				input[14]=Math.abs(i-headRow);
+			}
+		}
+		
+		//Calculate West Direction
+		input[18] = headCol;
+		input[19] = (headRow == apple.getRow() && apple.getCol() <= headCol) ? Math.abs(apple.getCol() - headCol) : -1;
+		for(int i = headCol - 1; i >=0; i--) {
+			if(gameBoard[headRow][i]) {
+				input[20]=Math.abs(i-headCol);
+			}
+		}
+			
+		
+		//Directions are one hot encoded
+		//direction of head
+		input[24+directionIndex]=1;
+		//direction of tail
+		if(snake.getLast().getCol() == snake.get(snake.size()-2).getCol()) {
+			//y-axis change
+			if(snake.getLast().getRow()>snake.get(snake.size()-2).getRow()) {
+				//up
+				input[28]=1;
+			}
+			else {
+				//down
+				input[30]=1;
+			}
+			
+		}else {
+			//x-axis change
+			if(snake.getLast().getCol()<snake.get(snake.size()-2).getRow()) {
+				//right
+				input[29]=1;
+			}
+			else {
+				//left
+				input[31]=1;
+			}
+		}
 		
 		return null;
 	}
