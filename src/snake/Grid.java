@@ -142,6 +142,23 @@ public class Grid {
 				input[2]=Math.abs(i-headRow);
 			}
 		}
+		//Calculate North East Direction
+		input[3] = Math.min(headRow, BOARD_WIDTH-headCol-1)*Math.sqrt(2);
+		boolean foundApple = false;
+		for(int row = headRow, col = headCol; row>=0 && col < BOARD_WIDTH; row--, col++) {
+			if(apple.getRow()==row && apple.getCol()==col) {
+				input[4]=Math.abs(row-headRow)*Math.sqrt(2);
+				break;
+			}
+		}
+		if(!foundApple) {
+			input[4]=-1;
+		}
+		for(int row = headRow - 1, col = headCol+1; row>=0 && col < BOARD_WIDTH; row--, col++) {
+			if(gameBoard[row][col]) {
+				input[5]=Math.abs(row-headRow);
+			}
+		}
 		
 		//Calculate East Direction
 		input[6] = BOARD_WIDTH - headCol-1;
@@ -152,6 +169,25 @@ public class Grid {
 			}
 		}
 		
+		//Calculate South East Direction
+		input[9] = Math.min(BOARD_HEIGHT - headRow -1, BOARD_WIDTH-headCol-1)*Math.sqrt(2);
+		foundApple = false;
+		for(int row = headRow, col = headCol; row< BOARD_HEIGHT && col < BOARD_WIDTH; row++, col++) {
+			if(apple.getRow()==row && apple.getCol()==col) {
+				input[10]=Math.abs(row-headRow)*Math.sqrt(2);
+				break;
+			}
+		}
+		if(!foundApple) {
+			input[10]=-1;
+		}
+		for(int row = headRow + 1, col = headCol+1; row< BOARD_HEIGHT && col < BOARD_WIDTH; row++, col++) {
+			if(gameBoard[row][col]) {
+				input[11]=Math.abs(row-headRow);
+			}
+		}
+		
+		
 		//Calculate South Direction
 		input[12] = BOARD_HEIGHT - headRow -1;
 		input[13] = (headCol == apple.getCol() && apple.getRow() >= headRow) ? Math.abs(apple.getRow() - headRow) : -1;
@@ -161,12 +197,50 @@ public class Grid {
 			}
 		}
 		
+		
+		//Calculate South West Direction
+		input[15] = Math.min(BOARD_HEIGHT - headRow -1, headCol)*Math.sqrt(2);
+		foundApple = false;
+		for(int row = headRow, col = headCol; row< BOARD_HEIGHT && col>=0; row++, col--) {
+			if(apple.getRow()==row && apple.getCol()==col) {
+				input[16]=Math.abs(row-headRow)*Math.sqrt(2);
+				break;
+			}
+		}
+		if(!foundApple) {
+			input[16]=-1;
+		}
+		for(int row = headRow+1, col = headCol-1; row< BOARD_HEIGHT && col>=0; row++, col--) {
+			if(gameBoard[row][col]) {
+				input[17]=Math.abs(row-headRow);
+			}
+		}
+		
+		
 		//Calculate West Direction
 		input[18] = headCol;
 		input[19] = (headRow == apple.getRow() && apple.getCol() <= headCol) ? Math.abs(apple.getCol() - headCol) : -1;
 		for(int i = headCol - 1; i >=0; i--) {
 			if(gameBoard[headRow][i]) {
 				input[20]=Math.abs(i-headCol);
+			}
+		}
+		
+		//Calculate North West Direction
+		input[21] = Math.min(headRow, headCol)*Math.sqrt(2);
+		foundApple = false;
+		for(int row = headRow, col = headCol; row>=0 && col >=0 ; row--, col--) {
+			if(apple.getRow()==row && apple.getCol()==col) {
+				input[22]=Math.abs(row-headRow)*Math.sqrt(2);
+				break;
+			}
+		}
+		if(!foundApple) {
+			input[22]=-1;
+		}
+		for(int row = headRow - 1, col = headCol-1; row>=0 && col >=0; row--, col--) {
+			if(gameBoard[row][col]) {
+				input[23]=Math.abs(row-headRow);
 			}
 		}
 			
