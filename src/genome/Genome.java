@@ -225,7 +225,7 @@ public class Genome {
 		NodeGene from = connection.getFrom();
 		NodeGene to = connection.getTo();
 		
-		int replaceIndex = neat.getReplaceIndex(from,to);
+		int replaceIndex = neat.getReplaceIndex(from,to); 
 		NodeGene middle;
 		if(replaceIndex == 0) { //There is no replace index, so we have to create our own new node for a new innovation number
 			middle = neat.getNode();

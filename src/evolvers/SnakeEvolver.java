@@ -1,46 +1,50 @@
 package evolvers;
 
 import neat.*;
+import snake.GameGUI;
 import snake.Grid;
+import visual.Frame;
 
 public class SnakeEvolver {
 	
-	private static int NUM_GENERATIONS = 200;
+	private static int NUM_GENERATIONS = 10;
+	private static int maxScore = 0;
 	
-	public static void rateIndividual(Grid board, Individual individual) {
-		board.initialize();
+	public static void rateIndividual(GameGUI game, Individual individual) {
+		game.grid.initialize();
 		
 		int iteration = 0;
-		//to incentivise the AI to not dally around; might need to change the threshold to be dynamic for the late game
+		//to incentive the AI to not dally around; might need to change the threshold to be dynamic for the late game
 		int iterationsWithoutApples = 0; 
-		int snakeSize = 0;
-		while(iteration< 1000 && iterationsWithoutApples < 20 && board.getGameState().equals("playing")) {
+		int snakeSize = 3;
+		while(iteration < 1000 && iterationsWithoutApples < 30 + snakeSize && game.grid.getGameState().equals("playing")) {
 			iteration++;
-			board.aiMove(individual);
-			if(board.getScore() != snakeSize) { //Snake just grew
-				iterationsWithoutApples++;
-				snakeSize = board.getScore();
+			game.grid.aiMove(individual);
+			game.grid.printBoard();
+			if(game.grid.getScore() != snakeSize) { //Snake just grew
+				iterationsWithoutApples=0;
+				snakeSize = game.grid.getScore();
 			}
 			else {
 				iterationsWithoutApples++;
 			}
 		}
-		individual.setScore(board.getScore());
-		
+		individual.setScore(game.grid.getScore());
+		maxScore = (int) Math.max(maxScore, individual.getScore());
 		
 	}
 	
-	public static void evolve(Grid board, Neat neat) {
+	public static void evolve(GameGUI game, Neat neat) {
 		for(int i =0; i < neat.getMaxIndividuals();i++) {
-			rateIndividual(board, neat.getIndividual(i));
+			rateIndividual(game, neat.getIndividual(i));
 		}
 		neat.evolve();
 	}
 	
 	
 	public static void main(String args[]) {
-		Grid game = new Grid();
-		Neat neat = new Neat(32,3,1000); //modify the input to contain more information
+		GameGUI game = new GameGUI(1);
+		Neat neat = new Neat(32,3,1); //modify the input to contain more information
 		
 		neat.setCP(3);
 		neat.setPROBABILITY_MUTATE_CONNECTION(0.3);
@@ -53,11 +57,12 @@ public class SnakeEvolver {
 		for(int i = 0; i< neat.getMaxIndividuals();i++) {
 			rateIndividual(game, neat.getIndividual(i));
 		}
-		
+		neat.evolve();
 		for(int i = 0; i < NUM_GENERATIONS; i++) {
 			System.out.println("########################" + i + "########################");
 			evolve(game, neat);
 			neat.printSpecies();
+			System.out.println(neat.getBestIndividual().getScore());
 			
 		}
 		
@@ -65,6 +70,9 @@ public class SnakeEvolver {
 			rateIndividual(game, neat.getIndividual(i));
 		}
 		
+		new Frame(neat.getBestIndividual().getGenome());
+		
+
 	}
 
 }

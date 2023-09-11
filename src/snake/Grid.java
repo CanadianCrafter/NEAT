@@ -1,5 +1,6 @@
 package snake;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -107,7 +108,7 @@ public class Grid {
 				
 	}
 	
-	public static void aiMove(Individual individual) {
+	public void aiMove(Individual individual) {
 		double output[] = individual.calculate(aiInput());
 		
 		//get the maximum from the output (the chosen action)
@@ -123,13 +124,20 @@ public class Grid {
 		int directionChange = index-1;
 		directionIndex = ((((directionIndex+directionChange)%4)+4)%4);
 		
+		updateGrid();
+		
 		
 	}
 	
 	public static double[] aiInput() {
 		double input[] = new double[32];
-		
+		int index = 2;
+		for(int i = 0; i < 8; i ++) {
+			input[index+i*3] = 1000;
+		}
 		//For N, E, S, W, NE, SE, SW, NW, we calculate the distance to wall, if there is an apple, and is there a part of a snake
+		
+		//TODO FIX DISTANCE TO SNAKE
 		
 		int headRow = snake.getFirst().getRow();
 		int headCol = snake.getFirst().getCol();
@@ -140,6 +148,7 @@ public class Grid {
 		for(int i = headRow -1; i >= 0; i--) {
 			if(gameBoard[i][headCol]) {
 				input[2]=Math.abs(i-headRow);
+				break;
 			}
 		}
 		//Calculate North East Direction
@@ -157,6 +166,7 @@ public class Grid {
 		for(int row = headRow - 1, col = headCol+1; row>=0 && col < BOARD_WIDTH; row--, col++) {
 			if(gameBoard[row][col]) {
 				input[5]=Math.abs(row-headRow);
+				break;
 			}
 		}
 		
@@ -166,6 +176,7 @@ public class Grid {
 		for(int i = headCol + 1; i < BOARD_WIDTH; i++) {
 			if(gameBoard[headRow][i]) {
 				input[8]=Math.abs(i-headCol);
+				break;
 			}
 		}
 		
@@ -184,9 +195,9 @@ public class Grid {
 		for(int row = headRow + 1, col = headCol+1; row< BOARD_HEIGHT && col < BOARD_WIDTH; row++, col++) {
 			if(gameBoard[row][col]) {
 				input[11]=Math.abs(row-headRow);
+				break;
 			}
 		}
-		
 		
 		//Calculate South Direction
 		input[12] = BOARD_HEIGHT - headRow -1;
@@ -194,9 +205,9 @@ public class Grid {
 		for(int i = headRow +1; i < BOARD_HEIGHT; i++) {
 			if(gameBoard[i][headCol]) {
 				input[14]=Math.abs(i-headRow);
+				break;
 			}
 		}
-		
 		
 		//Calculate South West Direction
 		input[15] = Math.min(BOARD_HEIGHT - headRow -1, headCol)*Math.sqrt(2);
@@ -213,9 +224,9 @@ public class Grid {
 		for(int row = headRow+1, col = headCol-1; row< BOARD_HEIGHT && col>=0; row++, col--) {
 			if(gameBoard[row][col]) {
 				input[17]=Math.abs(row-headRow);
+				break;
 			}
 		}
-		
 		
 		//Calculate West Direction
 		input[18] = headCol;
@@ -223,6 +234,7 @@ public class Grid {
 		for(int i = headCol - 1; i >=0; i--) {
 			if(gameBoard[headRow][i]) {
 				input[20]=Math.abs(i-headCol);
+				break;
 			}
 		}
 		
@@ -241,9 +253,9 @@ public class Grid {
 		for(int row = headRow - 1, col = headCol-1; row>=0 && col >=0; row--, col--) {
 			if(gameBoard[row][col]) {
 				input[23]=Math.abs(row-headRow);
+				break;
 			}
 		}
-			
 		
 		//Directions are one hot encoded
 		//direction of head
@@ -272,10 +284,10 @@ public class Grid {
 			}
 		}
 		
-		return null;
+		return input;
 	}
 	
-	private static void printBoard() {
+	public static void printBoard() {
 		for(int row = 0; row<BOARD_HEIGHT;row++) {
 			for(int col = 0; col<BOARD_WIDTH; col++) {
 				if(apple.row==row&&apple.col==col) {
@@ -292,6 +304,9 @@ public class Grid {
 			System.out.println();
 		}
 		System.out.println();
+		
+		System.out.println(Arrays.toString(aiInput()));
+		
 		
 	}
 
@@ -316,7 +331,8 @@ public class Grid {
 		return directionIndex;
 	}
 	public static void setDirectionIndex(int directionIndex) {
-		if((((directionIndex+2)%4)+4)%4!=directionIndex){
+		System.out.println("DIRECTION: " + (((directionIndex+2)%4)+4)%4);
+		if((((directionIndex+2)%4)+4)%4!=Grid.directionIndex){
 			Grid.directionIndex=directionIndex;
 		}
 		

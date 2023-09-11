@@ -155,11 +155,12 @@ public class Neat {
 		for(Species s: species.getData()) {
 			s.evaluateScore();
 		}
-//		System.out.println(species.size());
+
 	}
 	
 	
 	private void kill() {
+		if(species.size()==1) return;
 		for(Species s: species.getData()) {
 			s.kill(1-SURVIVOR_RATE);
 		}
@@ -167,6 +168,7 @@ public class Neat {
 	}
 	
 	private void removeExtinctSpecies() {
+		if(species.size()==1) return;
 		//We iterate backwards since species is a RandomHashSet which uses an ArrayList, and deleting is O(1) from the back
 		for(int i =species.size()-1; i>=0; i--) { 
 			if(species.get(i).size() <= 1) {  //If a species only has one or less individuals, it goes extinct
@@ -209,10 +211,29 @@ public class Neat {
 		}
 	}
 	
+	public Individual getBestIndividual() {
+		int highestScore = Integer.MIN_VALUE;
+		Individual best = null;
+		
+		
+		for(Individual i: individuals.getData()) {
+			if(i!=null && i.getScore() > highestScore) {
+				best = i;
+			}
+		}
+		return best;
+	}
+	
 	//Get the individual based on their index
 	public Individual getIndividual(int index) {
 		return individuals.get(index);
 	}
+	
+	//For Testing: returns the number of individuals
+	public int numIndividual() {
+		return individuals.size();
+	}
+	
 	
 	public void setReplaceIndex(NodeGene node1, NodeGene node2, int index) {
     	allConnections.get(new ConnectionGene(node1, node2)).setReplaceIndex(index);
@@ -241,7 +262,6 @@ public class Neat {
 	public static void main(String[] args) {
 		Neat neat = new Neat(10,1,1000);
 		double input[] = new double[10];
-		
 		for(int i = 0; i< 10; i++) input[i] = Math.random();
 		
 		for(int i = 0; i< 100; i++) {

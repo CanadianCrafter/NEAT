@@ -37,36 +37,29 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 	private static JMenuItem exit;
 	
 	public static Grid grid;
+	
+	public static int mode = 0;
 
 	
 	/**
-	 * Creates a panel with a specified number of rows and columns of squares of a certain size.
-	 * @param rows  The number of rows of squares.
-	 * @param columns  The number of columns of squares.
-	 * @param preferredSquareSize  The desired size, in pixels, for the squares. This will
-	 *     be used to compute the preferred size of the panel. 
+	 * mode = 0 is player mode, where the game runs on a timer
+	 * mode = 1 is ai training mode, where the game runs after ai input
+	 * mode = 2 is ai playing mode, where the game runs on a timer, and at each timer click, the ai is asked for input
 	 */
-	public GameGUI() {
+	public GameGUI(int mode) {
+		this.mode = mode;
+		grid = new Grid();
+		window = new JFrame("Snake");  // Create a window and names it.
 		menuBar();
 		gridColour = new Color[Grid.getBoardHeight()][Grid.getBoardWidth()]; // Create the array that stores square colors.
 		setPreferredSize(new Dimension(BOX_SIZE*Grid.getBoardWidth(), BOX_SIZE*Grid.getBoardHeight()));
 		setBackground(backgroundColour); // Set the background color for this panel.
 		
-		animationTimer.start(); // starts timer for the animation
+		if(mode!=1) animationTimer.start(); // starts timer for the animation
 		animationIndex = 0;
-		window.addKeyListener(this);
-	}
-	
-	/**
-	 * This creates a window and sets its content to be a panel of type Grid.
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		grid = new Grid();
-		//GUI
-		window = new JFrame("Snake");  // Create a window and names it.
-		GameGUI content = new GameGUI();  // 10 by 10 grid of 40px x 40px squares
-		window.setContentPane(content);  // Add the Grid panel to the window.
+		if(mode==0) window.addKeyListener(this);
+		
+		window.setContentPane(this);  // Add the Grid panel to the window.
 		window.pack(); // Set the size of the window based on the panel's preferred size.
 		Dimension screenSize; // A simple object containing the screen's width and height.
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -77,7 +70,30 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setVisible(true);
+	}
+	
+	/**
+	 * This creates a window and sets its content to be a panel of type Grid.
+	 * @param args
+	 */
+	public static void main(String[] args) {
 		
+		GameGUI game = new GameGUI(0);
+//		//GUI
+//		window = new JFrame("Snake");  // Create a window and names it.
+//		GameGUI content = new GameGUI();  // 10 by 10 grid of 40px x 40px squares
+//		window.setContentPane(content);  // Add the Grid panel to the window.
+//		window.pack(); // Set the size of the window based on the panel's preferred size.
+//		Dimension screenSize; // A simple object containing the screen's width and height.
+//		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//		// position for top left corner of the window
+//		int left = (screenSize.width - window.getWidth()) / 2;
+//		int top = (screenSize.height - window.getHeight()) / 2;
+//		window.setLocation(left,top);
+//		window.setResizable(false);
+//		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		window.setVisible(true);
+				
 		
 	}
 	
@@ -107,7 +123,7 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 	}
 	
  
-	private void updateGrid() {
+	public void updateGrid() {
 		
 		Grid.updateGrid();
 		String gameState = Grid.getGameState();
