@@ -7,7 +7,7 @@ import visual.Frame;
 
 public class SnakeEvolver {
 	
-	private static int NUM_GENERATIONS = 200;
+	private static int NUM_GENERATIONS = 400;
 	private static int maxScore = 0;
 	
 	public static void rateIndividual(Grid game, Individual individual, boolean print) {
@@ -17,25 +17,28 @@ public class SnakeEvolver {
 		//to incentive the AI to not dally around; might need to change the threshold to be dynamic for the late game
 		int iterationsWithoutApples = 0; 
 		int snakeSize = 3;
-		while(iteration < 1000 && iterationsWithoutApples < 17 + snakeSize && game.getGameState().equals("playing")) {
+		double diff = 0;
+		while(iteration < 1000 && iterationsWithoutApples < 40 +2*snakeSize && game.getGameState().equals("playing")) {
 			iteration++;
 			game.aiMove(individual);
 			if(print) game.printBoard();
 			if(game.getScore() != snakeSize) { //Snake just grew
 				iterationsWithoutApples=0;
-				snakeSize = game.getScore();
+				snakeSize = (int) game.getScore();
 			}
 			else {
 				iterationsWithoutApples++;
 				if(print) System.out.println("Iterations Without Apples: " + iterationsWithoutApples);
 			}
+			if(iterationsWithoutApples>2) diff+=0.2+1/iterationsWithoutApples;
 		}
-		individual.setScore(game.getScore());
+		individual.setScore(game.getScore()*2+diff);
 		if(iterationsWithoutApples== 17 + snakeSize) {
-			individual.setScore(0);
+			individual.setScore(game.getScore()*2-2+diff);
 			if(print) System.out.println("DEATH BY TIME");
 		}
 		maxScore = (int) Math.max(maxScore, individual.getScore());
+		
 		
 	}
 	

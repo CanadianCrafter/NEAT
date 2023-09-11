@@ -13,21 +13,21 @@ public class Neat {
 	
 	public static final int MAX_NODES = (int) Math.pow(2, 20);
 	
-	private double C1 = 1;
-	private double C2 = 1;
+	private double C1 = 2;
+	private double C2 = 2;
 	private double C3 = 1;
 	
-	private double CP = 4;
+	private double CP = 0.3; //changed from 4
 	
 	private double WEIGHT_SHIFT_STRENGTH = 0.3;
 	private double WEIGHT_RANDOM_STRENGTH = 1;
 	
-	private double SURVIVOR_RATE = 0.8;
+	private double SURVIVOR_RATE = 0.5;
 	
-	private double PROBABILITY_MUTATE_CONNECTION = 0.01;
-	private double PROBABILITY_MUTATE_NODE = 0.1;
-	private double PROBABILITY_MUTATE_WEIGHT_SHIFT = 0.02;
-	private double PROBABILITY_MUTATE_WEIGHT_RANDOM = 0.02;
+	private double PROBABILITY_MUTATE_CONNECTION = 0.3;
+	private double PROBABILITY_MUTATE_NODE = 0.3;
+	private double PROBABILITY_MUTATE_WEIGHT_SHIFT = 0.1;
+	private double PROBABILITY_MUTATE_WEIGHT_RANDOM = 0.1;
 	private double PROBABILITY_MUTATE_TOGGLE_CONNECTION = 0;
 	
 	//The same connection matches to itself, this is simply to leverage a map's ease of use.	

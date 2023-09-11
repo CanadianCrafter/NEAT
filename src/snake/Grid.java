@@ -19,7 +19,7 @@ public class Grid {
 	
 	private static Coords apple;
 	
-	private static int score;
+	private static double score;
 	private static String gameState; // win, lose, or playing
 	
 	
@@ -73,8 +73,9 @@ public class Grid {
 		}
 		
 		//WIN
-		gameState = "win";
-		
+		if(openSpaces==0) {
+			gameState = "win";
+		}
 	}
 
 	public static void updateGrid() {
@@ -90,10 +91,11 @@ public class Grid {
 			//DEAD
 			if(newRow >= BOARD_HEIGHT || newRow<0 ||newCol < 0|| newCol >= BOARD_WIDTH) {
 //				System.out.println("DEATH BY WALL");
-				score/=2;
+//				score-=2;
 			}
 			else {
 //				System.out.println("DEATH BY SUICIDE");
+//				score/=3;
 			}
 			gameState = "lose";
 			return;
@@ -344,7 +346,7 @@ public class Grid {
 		}
 		
 	}
-	public static int getScore() {
+	public static double getScore() {
 		return score;
 	}
 	public static String getGameState() {
