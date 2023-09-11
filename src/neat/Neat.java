@@ -160,7 +160,7 @@ public class Neat {
 	
 	
 	private void kill() {
-		if(species.size()==1) return;
+		if(species.size()==1&&species.get(0).size()==1) return;
 		for(Species s: species.getData()) {
 			s.kill(1-SURVIVOR_RATE);
 		}
@@ -168,7 +168,7 @@ public class Neat {
 	}
 	
 	private void removeExtinctSpecies() {
-		if(species.size()==1) return;
+		if(species.size()==1&&species.get(0).size()==1) return;
 		//We iterate backwards since species is a RandomHashSet which uses an ArrayList, and deleting is O(1) from the back
 		for(int i =species.size()-1; i>=0; i--) { 
 			if(species.get(i).size() <= 1) {  //If a species only has one or less individuals, it goes extinct
@@ -202,7 +202,7 @@ public class Neat {
 	}
 	
 	public void printSpecies() {
-		System.out.println("################################################################");
+//		System.out.println("################################################################");
 		for(Species s: this.species.getData()) {
 			System.out.println(s + " " + s.getScore() + " " + s.size());
 //			for(int i =0; i < s.getIndividuals().size(); i++) {

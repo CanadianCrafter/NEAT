@@ -78,7 +78,7 @@ public class Grid {
 	}
 
 	public static void updateGrid() {
-		printBoard();		
+//		printBoard();		
 		
 		int newRow = snake.getFirst().row+directionVectors.get(directions[directionIndex])[0];
 		int newCol = snake.getFirst().col+directionVectors.get(directions[directionIndex])[1];
@@ -88,6 +88,13 @@ public class Grid {
 		
 		if(newRow >= BOARD_HEIGHT || newRow<0 ||newCol < 0|| newCol >= BOARD_WIDTH || gameBoard[newRow][newCol]) {
 			//DEAD
+			if(newRow >= BOARD_HEIGHT || newRow<0 ||newCol < 0|| newCol >= BOARD_WIDTH) {
+//				System.out.println("DEATH BY WALL");
+				score/=2;
+			}
+			else {
+//				System.out.println("DEATH BY SUICIDE");
+			}
 			gameState = "lose";
 			return;
 		}
@@ -112,17 +119,19 @@ public class Grid {
 		double output[] = individual.calculate(aiInput());
 		
 		//get the maximum from the output (the chosen action)
-		//index 0 is turn left, index 1 is go straight, index 2 is turn left
+		//index 0 is turn left, index 1 is go straight, index 2 is turn right
 		//(Having only three outputs (relative direction) compared to north east south west's four
 		//might increase effectiveness??? will test later
-		int index = 0;
+		int newDirection = 0;
 		for(int i = 1; i< output.length; i++) {
-			if(output[i]>output[index]) {
-				index=i;
+			if(output[i]>output[newDirection]) {
+				newDirection=i;
 			}
 		}
-		int directionChange = index-1;
-		directionIndex = ((((directionIndex+directionChange)%4)+4)%4);
+		//Used when direction is left/right/forward relative to head
+//		int directionChange = index-1;
+//		directionIndex = ((((directionIndex+directionChange)%4)+4)%4);
+		if(((directionIndex-newDirection+4) %4)!=2) directionIndex = newDirection;
 		
 		updateGrid();
 		
@@ -136,8 +145,6 @@ public class Grid {
 			input[index+i*3] = 1000;
 		}
 		//For N, E, S, W, NE, SE, SW, NW, we calculate the distance to wall, if there is an apple, and is there a part of a snake
-		
-		//TODO FIX DISTANCE TO SNAKE
 		
 		int headRow = snake.getFirst().getRow();
 		int headCol = snake.getFirst().getCol();
