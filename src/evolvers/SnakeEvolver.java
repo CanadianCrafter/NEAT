@@ -30,11 +30,16 @@ public class SnakeEvolver {
 				iterationsWithoutApples++;
 				if(print) System.out.println("Iterations Without Apples: " + iterationsWithoutApples);
 			}
-			if(iterationsWithoutApples>2) diff+=0.2+1/iterationsWithoutApples;
+			//consider using a negative tanh function so that it eventually punishes living too long
+//			if(iterationsWithoutApples>2) diff+=(0.2+1/iterationsWithoutApples)*(40-iterationsWithoutApples)/Math.abs(iterationsWithoutApples==40?1:40-iterationsWithoutApples); 
+//			diff+=-4*Math.tanh((iterationsWithoutApples-40)/20);
+//			diff+=-(iterationsWithoutApples-40)/10;
+//			diff+=-Math.pow((iterationsWithoutApples-40),3)/10000;
+			diff+=-Math.pow((iterationsWithoutApples-40),3)/10000-4*Math.tanh((iterationsWithoutApples-40)/20);
 		}
-		individual.setScore(game.getScore()*2+diff);
+		individual.setScore(game.getScore()*3+diff);
 		if(iterationsWithoutApples== 17 + snakeSize) {
-			individual.setScore(game.getScore()*2-2+diff);
+			individual.setScore(game.getScore()*3-2+diff);
 			if(print) System.out.println("DEATH BY TIME");
 		}
 		maxScore = (int) Math.max(maxScore, individual.getScore());
