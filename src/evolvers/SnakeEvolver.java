@@ -23,8 +23,10 @@ public class SnakeEvolver {
 			game.aiMove(individual);
 			if(print) game.printBoard();
 			if(game.getScore() != snakeSize) { //Snake just grew
+				//reward snake for getting it quickly
+//				diff+= Math.max((-1/10)*iterationsWithoutApples+5,0);
 				iterationsWithoutApples=0;
-				snakeSize = (int) game.getScore();
+				snakeSize = (int) game.getScore();		
 			}
 			else {
 				iterationsWithoutApples++;
@@ -35,11 +37,13 @@ public class SnakeEvolver {
 //			diff+=-4*Math.tanh((iterationsWithoutApples-40)/20);
 //			diff+=-(iterationsWithoutApples-40)/10;
 //			diff+=-Math.pow((iterationsWithoutApples-40),3)/10000;
-			diff+=-Math.pow((iterationsWithoutApples-40),3)/10000-4*Math.tanh((iterationsWithoutApples-40)/20);
+			diff+=-Math.pow((iterationsWithoutApples-40),3)/40000-4*Math.tanh((iterationsWithoutApples-40)/20);
+			
 		}
-		individual.setScore(game.getScore()*3+diff);
-		if(iterationsWithoutApples== 17 + snakeSize) {
-			individual.setScore(game.getScore()*3-2+diff);
+//		diff+=Math.max(-(iteration)/100+3,0); //reward living long
+		individual.setScore(game.getScore()*10+diff);
+		if(iterationsWithoutApples== 40 +2*snakeSize) {
+			individual.setScore(game.getScore()*10-2+diff);
 			if(print) System.out.println("DEATH BY TIME");
 		}
 		maxScore = (int) Math.max(maxScore, individual.getScore());
