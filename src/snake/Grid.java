@@ -117,8 +117,8 @@ public class Grid {
 				
 	}
 	
-	public void aiMove(Individual individual) {
-		double output[] = individual.calculate(aiInput());
+	public void aiMove(Individual individual, int inputSize) {
+		double output[] = individual.calculate(aiInput(inputSize));
 		
 		//get the maximum from the output (the chosen action)
 		//index 0 is turn left, index 1 is go straight, index 2 is turn right
@@ -140,158 +140,313 @@ public class Grid {
 		
 	}
 	
-	public static double[] aiInput() {
-		double input[] = new double[32];
-		int index = 2;
-		for(int i = 0; i < 8; i ++) {
-			input[index+i*3] = 1000;
-		}
-		//For N, E, S, W, NE, SE, SW, NW, we calculate the distance to wall, if there is an apple, and is there a part of a snake
+	public static double[] aiInput(int inputSize) {
 		
-		int headRow = snake.getFirst().getRow();
-		int headCol = snake.getFirst().getCol();
+		double input[] = new double[inputSize];
 		
-		//Calculate North Direction
-		input[0] = headRow;
-		input[1] = (headCol == apple.getCol() && apple.getRow() <= headRow) ? Math.abs(apple.getRow() - headRow) : -1;
-		for(int i = headRow -1; i >= 0; i--) {
-			if(gameBoard[i][headCol]) {
-				input[2]=Math.abs(i-headRow);
-				break;
+		if(inputSize==24) {
+			//For N, E, S, W, NE, SE, SW, NW, we calculate the distance to wall or part of the snake, and the distance of an apple if it is there
+			//Then we have the one-hot encoding of the head's direction, and after that the one-hot encoding of the tail's direction
+			int headRow = snake.getFirst().getRow();
+			int headCol = snake.getFirst().getCol();
+			
+			//Calculate North Direction
+			input[0] = headRow;
+			input[1] = (headCol == apple.getCol() && apple.getRow() <= headRow) ? Math.abs(apple.getRow() - headRow) : -1;
+			for(int i = headRow -1; i >= 0; i--) {
+				if(gameBoard[i][headCol]) {
+					input[0]=Math.min(Math.abs(i-headRow),input[0]);
+					break;
+				}
 			}
-		}
-		//Calculate North East Direction
-		input[3] = Math.min(headRow, BOARD_WIDTH-headCol-1)*Math.sqrt(2);
-		boolean foundApple = false;
-		for(int row = headRow, col = headCol; row>=0 && col < BOARD_WIDTH; row--, col++) {
-			if(apple.getRow()==row && apple.getCol()==col) {
-				input[4]=Math.abs(row-headRow)*Math.sqrt(2);
-				break;
+			//Calculate North East Direction
+			input[2] = Math.min(headRow, BOARD_WIDTH-headCol-1)*Math.sqrt(2);
+			boolean foundApple = false;
+			for(int row = headRow, col = headCol; row>=0 && col < BOARD_WIDTH; row--, col++) {
+				if(apple.getRow()==row && apple.getCol()==col) {
+					input[3]=Math.abs(row-headRow)*Math.sqrt(2);
+					break;
+				}
 			}
-		}
-		if(!foundApple) {
-			input[4]=-1;
-		}
-		for(int row = headRow - 1, col = headCol+1; row>=0 && col < BOARD_WIDTH; row--, col++) {
-			if(gameBoard[row][col]) {
-				input[5]=Math.abs(row-headRow);
-				break;
+			if(!foundApple) {
+				input[3]=-1;
 			}
-		}
-		
-		//Calculate East Direction
-		input[6] = BOARD_WIDTH - headCol-1;
-		input[7] = (headRow == apple.getRow() && apple.getCol() >= headCol) ? Math.abs(apple.getCol() - headCol) : -1;
-		for(int i = headCol + 1; i < BOARD_WIDTH; i++) {
-			if(gameBoard[headRow][i]) {
-				input[8]=Math.abs(i-headCol);
-				break;
-			}
-		}
-		
-		//Calculate South East Direction
-		input[9] = Math.min(BOARD_HEIGHT - headRow -1, BOARD_WIDTH-headCol-1)*Math.sqrt(2);
-		foundApple = false;
-		for(int row = headRow, col = headCol; row< BOARD_HEIGHT && col < BOARD_WIDTH; row++, col++) {
-			if(apple.getRow()==row && apple.getCol()==col) {
-				input[10]=Math.abs(row-headRow)*Math.sqrt(2);
-				break;
-			}
-		}
-		if(!foundApple) {
-			input[10]=-1;
-		}
-		for(int row = headRow + 1, col = headCol+1; row< BOARD_HEIGHT && col < BOARD_WIDTH; row++, col++) {
-			if(gameBoard[row][col]) {
-				input[11]=Math.abs(row-headRow);
-				break;
-			}
-		}
-		
-		//Calculate South Direction
-		input[12] = BOARD_HEIGHT - headRow -1;
-		input[13] = (headCol == apple.getCol() && apple.getRow() >= headRow) ? Math.abs(apple.getRow() - headRow) : -1;
-		for(int i = headRow +1; i < BOARD_HEIGHT; i++) {
-			if(gameBoard[i][headCol]) {
-				input[14]=Math.abs(i-headRow);
-				break;
-			}
-		}
-		
-		//Calculate South West Direction
-		input[15] = Math.min(BOARD_HEIGHT - headRow -1, headCol)*Math.sqrt(2);
-		foundApple = false;
-		for(int row = headRow, col = headCol; row< BOARD_HEIGHT && col>=0; row++, col--) {
-			if(apple.getRow()==row && apple.getCol()==col) {
-				input[16]=Math.abs(row-headRow)*Math.sqrt(2);
-				break;
-			}
-		}
-		if(!foundApple) {
-			input[16]=-1;
-		}
-		for(int row = headRow+1, col = headCol-1; row< BOARD_HEIGHT && col>=0; row++, col--) {
-			if(gameBoard[row][col]) {
-				input[17]=Math.abs(row-headRow);
-				break;
-			}
-		}
-		
-		//Calculate West Direction
-		input[18] = headCol;
-		input[19] = (headRow == apple.getRow() && apple.getCol() <= headCol) ? Math.abs(apple.getCol() - headCol) : -1;
-		for(int i = headCol - 1; i >=0; i--) {
-			if(gameBoard[headRow][i]) {
-				input[20]=Math.abs(i-headCol);
-				break;
-			}
-		}
-		
-		//Calculate North West Direction
-		input[21] = Math.min(headRow, headCol)*Math.sqrt(2);
-		foundApple = false;
-		for(int row = headRow, col = headCol; row>=0 && col >=0 ; row--, col--) {
-			if(apple.getRow()==row && apple.getCol()==col) {
-				input[22]=Math.abs(row-headRow)*Math.sqrt(2);
-				break;
-			}
-		}
-		if(!foundApple) {
-			input[22]=-1;
-		}
-		for(int row = headRow - 1, col = headCol-1; row>=0 && col >=0; row--, col--) {
-			if(gameBoard[row][col]) {
-				input[23]=Math.abs(row-headRow);
-				break;
-			}
-		}
-		
-		//Directions are one hot encoded
-		//direction of head
-		input[24+directionIndex]=1;
-		//direction of tail
-		if(snake.getLast().getCol() == snake.get(snake.size()-2).getCol()) {
-			//y-axis change
-			if(snake.getLast().getRow()>snake.get(snake.size()-2).getRow()) {
-				//up
-				input[28]=1;
-			}
-			else {
-				//down
-				input[30]=1;
+			for(int row = headRow - 1, col = headCol+1; row>=0 && col < BOARD_WIDTH; row--, col++) {
+				if(gameBoard[row][col]) {
+					input[2]=Math.min(Math.abs(row-headRow), input[2]);
+					break;
+				}
 			}
 			
-		}else {
-			//x-axis change
-			if(snake.getLast().getCol()<snake.get(snake.size()-2).getRow()) {
-				//right
-				input[29]=1;
+			//Calculate East Direction
+			input[4] = BOARD_WIDTH - headCol-1;
+			input[5] = (headRow == apple.getRow() && apple.getCol() >= headCol) ? Math.abs(apple.getCol() - headCol) : -1;
+			for(int i = headCol + 1; i < BOARD_WIDTH; i++) {
+				if(gameBoard[headRow][i]) {
+					input[4]=Math.min(Math.abs(i-headCol),input[4]);
+					break;
+				}
 			}
-			else {
-				//left
-				input[31]=1;
+			
+			//Calculate South East Direction
+			input[6] = Math.min(BOARD_HEIGHT - headRow -1, BOARD_WIDTH-headCol-1)*Math.sqrt(2);
+			foundApple = false;
+			for(int row = headRow, col = headCol; row< BOARD_HEIGHT && col < BOARD_WIDTH; row++, col++) {
+				if(apple.getRow()==row && apple.getCol()==col) {
+					input[7]=Math.abs(row-headRow)*Math.sqrt(2);
+					break;
+				}
+			}
+			if(!foundApple) {
+				input[7]=-1;
+			}
+			for(int row = headRow + 1, col = headCol+1; row< BOARD_HEIGHT && col < BOARD_WIDTH; row++, col++) {
+				if(gameBoard[row][col]) {
+					input[6]=Math.min(Math.abs(row-headRow), input[6]);
+					break;
+				}
+			}
+			
+			//Calculate South Direction
+			input[8] = BOARD_HEIGHT - headRow -1;
+			input[9] = (headCol == apple.getCol() && apple.getRow() >= headRow) ? Math.abs(apple.getRow() - headRow) : -1;
+			for(int i = headRow +1; i < BOARD_HEIGHT; i++) {
+				if(gameBoard[i][headCol]) {
+					input[8]=Math.min(Math.abs(i-headRow),8);
+					break;
+				}
+			}
+			
+			//Calculate South West Direction
+			input[10] = Math.min(BOARD_HEIGHT - headRow -1, headCol)*Math.sqrt(2);
+			foundApple = false;
+			for(int row = headRow, col = headCol; row< BOARD_HEIGHT && col>=0; row++, col--) {
+				if(apple.getRow()==row && apple.getCol()==col) {
+					input[11]=Math.abs(row-headRow)*Math.sqrt(2);
+					break;
+				}
+			}
+			if(!foundApple) {
+				input[11]=-1;
+			}
+			for(int row = headRow+1, col = headCol-1; row< BOARD_HEIGHT && col>=0; row++, col--) {
+				if(gameBoard[row][col]) {
+					input[10]=Math.min(Math.abs(row-headRow), input[10]);
+					break;
+				}
+			}
+			
+			//Calculate West Direction
+			input[12] = headCol;
+			input[13] = (headRow == apple.getRow() && apple.getCol() <= headCol) ? Math.abs(apple.getCol() - headCol) : -1;
+			for(int i = headCol - 1; i >=0; i--) {
+				if(gameBoard[headRow][i]) {
+					input[12]=Math.min(Math.abs(i-headCol), input[12]);
+					break;
+				}
+			}
+			
+			//Calculate North West Direction
+			input[14] = Math.min(headRow, headCol)*Math.sqrt(2);
+			foundApple = false;
+			for(int row = headRow, col = headCol; row>=0 && col >=0 ; row--, col--) {
+				if(apple.getRow()==row && apple.getCol()==col) {
+					input[15]=Math.abs(row-headRow)*Math.sqrt(2);
+					break;
+				}
+			}
+			if(!foundApple) {
+				input[15]=-1;
+			}
+			for(int row = headRow - 1, col = headCol-1; row>=0 && col >=0; row--, col--) {
+				if(gameBoard[row][col]) {
+					input[14]=Math.min(Math.abs(row-headRow),input[14]);
+					break;
+				}
+			}
+			
+			//Directions are one hot encoded
+			//direction of head
+			input[16+directionIndex]=1;
+			//direction of tail
+			if(snake.getLast().getCol() == snake.get(snake.size()-2).getCol()) {
+				//y-axis change
+				if(snake.getLast().getRow()>snake.get(snake.size()-2).getRow()) {
+					//up
+					input[20]=1;
+				}
+				else {
+					//down
+					input[21]=1;
+				}
+				
+			}else {
+				//x-axis change
+				if(snake.getLast().getCol()<snake.get(snake.size()-2).getRow()) {
+					//right
+					input[22]=1;
+				}
+				else {
+					//left
+					input[23]=1;
+				}
 			}
 		}
+		
+		if(inputSize==32) {
+			int index = 2;
+			for(int i = 0; i < 8; i ++) {
+				input[index+i*3] = 1000;
+			}
+			//For N, E, S, W, NE, SE, SW, NW, we calculate the distance to wall, if there is an apple, and if there a part of a snake
+			//Then we have the one-hot encoding of the head's direction, and after that the one-hot encoding of the tail's direction
+			
+			int headRow = snake.getFirst().getRow();
+			int headCol = snake.getFirst().getCol();
+			
+			//Calculate North Direction
+			input[0] = headRow;
+			input[1] = (headCol == apple.getCol() && apple.getRow() <= headRow) ? Math.abs(apple.getRow() - headRow) : -1;
+			for(int i = headRow -1; i >= 0; i--) {
+				if(gameBoard[i][headCol]) {
+					input[2]=Math.abs(i-headRow);
+					break;
+				}
+			}
+			//Calculate North East Direction
+			input[3] = Math.min(headRow, BOARD_WIDTH-headCol-1)*Math.sqrt(2);
+			boolean foundApple = false;
+			for(int row = headRow, col = headCol; row>=0 && col < BOARD_WIDTH; row--, col++) {
+				if(apple.getRow()==row && apple.getCol()==col) {
+					input[4]=Math.abs(row-headRow)*Math.sqrt(2);
+					break;
+				}
+			}
+			if(!foundApple) {
+				input[4]=-1;
+			}
+			for(int row = headRow - 1, col = headCol+1; row>=0 && col < BOARD_WIDTH; row--, col++) {
+				if(gameBoard[row][col]) {
+					input[5]=Math.abs(row-headRow);
+					break;
+				}
+			}
+			
+			//Calculate East Direction
+			input[6] = BOARD_WIDTH - headCol-1;
+			input[7] = (headRow == apple.getRow() && apple.getCol() >= headCol) ? Math.abs(apple.getCol() - headCol) : -1;
+			for(int i = headCol + 1; i < BOARD_WIDTH; i++) {
+				if(gameBoard[headRow][i]) {
+					input[8]=Math.abs(i-headCol);
+					break;
+				}
+			}
+			
+			//Calculate South East Direction
+			input[9] = Math.min(BOARD_HEIGHT - headRow -1, BOARD_WIDTH-headCol-1)*Math.sqrt(2);
+			foundApple = false;
+			for(int row = headRow, col = headCol; row< BOARD_HEIGHT && col < BOARD_WIDTH; row++, col++) {
+				if(apple.getRow()==row && apple.getCol()==col) {
+					input[10]=Math.abs(row-headRow)*Math.sqrt(2);
+					break;
+				}
+			}
+			if(!foundApple) {
+				input[10]=-1;
+			}
+			for(int row = headRow + 1, col = headCol+1; row< BOARD_HEIGHT && col < BOARD_WIDTH; row++, col++) {
+				if(gameBoard[row][col]) {
+					input[11]=Math.abs(row-headRow);
+					break;
+				}
+			}
+			
+			//Calculate South Direction
+			input[12] = BOARD_HEIGHT - headRow -1;
+			input[13] = (headCol == apple.getCol() && apple.getRow() >= headRow) ? Math.abs(apple.getRow() - headRow) : -1;
+			for(int i = headRow +1; i < BOARD_HEIGHT; i++) {
+				if(gameBoard[i][headCol]) {
+					input[14]=Math.abs(i-headRow);
+					break;
+				}
+			}
+			
+			//Calculate South West Direction
+			input[15] = Math.min(BOARD_HEIGHT - headRow -1, headCol)*Math.sqrt(2);
+			foundApple = false;
+			for(int row = headRow, col = headCol; row< BOARD_HEIGHT && col>=0; row++, col--) {
+				if(apple.getRow()==row && apple.getCol()==col) {
+					input[16]=Math.abs(row-headRow)*Math.sqrt(2);
+					break;
+				}
+			}
+			if(!foundApple) {
+				input[16]=-1;
+			}
+			for(int row = headRow+1, col = headCol-1; row< BOARD_HEIGHT && col>=0; row++, col--) {
+				if(gameBoard[row][col]) {
+					input[17]=Math.abs(row-headRow);
+					break;
+				}
+			}
+			
+			//Calculate West Direction
+			input[18] = headCol;
+			input[19] = (headRow == apple.getRow() && apple.getCol() <= headCol) ? Math.abs(apple.getCol() - headCol) : -1;
+			for(int i = headCol - 1; i >=0; i--) {
+				if(gameBoard[headRow][i]) {
+					input[20]=Math.abs(i-headCol);
+					break;
+				}
+			}
+			
+			//Calculate North West Direction
+			input[21] = Math.min(headRow, headCol)*Math.sqrt(2);
+			foundApple = false;
+			for(int row = headRow, col = headCol; row>=0 && col >=0 ; row--, col--) {
+				if(apple.getRow()==row && apple.getCol()==col) {
+					input[22]=Math.abs(row-headRow)*Math.sqrt(2);
+					break;
+				}
+			}
+			if(!foundApple) {
+				input[22]=-1;
+			}
+			for(int row = headRow - 1, col = headCol-1; row>=0 && col >=0; row--, col--) {
+				if(gameBoard[row][col]) {
+					input[23]=Math.abs(row-headRow);
+					break;
+				}
+			}
+			
+			//Directions are one hot encoded
+			//direction of head
+			input[24+directionIndex]=1;
+			//direction of tail
+			if(snake.getLast().getCol() == snake.get(snake.size()-2).getCol()) {
+				//y-axis change
+				if(snake.getLast().getRow()>snake.get(snake.size()-2).getRow()) {
+					//up
+					input[28]=1;
+				}
+				else {
+					//down
+					input[30]=1;
+				}
+				
+			}else {
+				//x-axis change
+				if(snake.getLast().getCol()<snake.get(snake.size()-2).getRow()) {
+					//right
+					input[29]=1;
+				}
+				else {
+					//left
+					input[31]=1;
+				}
+			}
+		}
+
 		
 		return input;
 	}
@@ -314,7 +469,7 @@ public class Grid {
 		}
 		System.out.println();
 		
-		System.out.println(Arrays.toString(aiInput()));
+		System.out.println(Arrays.toString(aiInput(24)));
 		
 		
 	}
