@@ -124,6 +124,7 @@ public class Grid {
 		//index 0 is turn left, index 1 is go straight, index 2 is turn right
 		//(Having only three outputs (relative direction) compared to north east south west's four
 		//might increase effectiveness??? will test later
+		//absolute directions (north, east, south, west)
 		int newDirection = 0;
 		for(int i = 1; i< output.length; i++) {
 			if(output[i]>output[newDirection]) {
@@ -469,7 +470,7 @@ public class Grid {
 		}
 		System.out.println();
 		
-		System.out.println(Arrays.toString(aiInput(24)));
+//		System.out.println(Arrays.toString(aiInput(24)));
 		
 		
 	}
@@ -495,7 +496,7 @@ public class Grid {
 		return directionIndex;
 	}
 	public static void setDirectionIndex(int directionIndex) {
-		System.out.println("DIRECTION: " + (((directionIndex+2)%4)+4)%4);
+//		System.out.println("DIRECTION: " + (((directionIndex+2)%4)+4)%4);
 		if((((directionIndex+2)%4)+4)%4!=Grid.directionIndex){
 			Grid.directionIndex=directionIndex;
 		}

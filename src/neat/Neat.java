@@ -117,9 +117,9 @@ public class Neat {
 	
 	public void evolve() {
 		generateSpecies(); //This groups the individuals into the species
-		kill(); //Kill some percentage of the individuals
+		kill(); //Kill the bottom killrate percentage of the individuals
 		removeExtinctSpecies(); //If any species goes extinct, remove them
-		reproduce(); //The clients that gone extinct get replaced by the offspring of two random individuals from the same species (randomly chosen)
+		reproduce(); //For every Individual that was killed, we replace it with the offspring of two random individuals from the same species (randomly chosen)
 		mutate(); //mutate everything
 		for(Individual individual: individuals.getData()) {
 			individual.generateCalculator(); //calculate everything
@@ -137,6 +137,8 @@ public class Neat {
 			if(i.getSpecies() != null) continue;
 			
 			//See if the individual fits in one of the existing species
+			//TODO: Might perform poorly if distance threshold is bad since this doesn't find the closest species this individual is to
+			//but rather the first one it is close enough.
 			boolean joinedSpecies = false;
 			for(Species s: species.getData()) {
 				if(s.put(i)) {

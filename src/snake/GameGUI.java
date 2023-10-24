@@ -130,13 +130,13 @@ public class GameGUI extends JPanel implements ActionListener, KeyListener{
 		if(gameState.equals("win")) {
 			animationTimer.stop();
 			System.out.println("Win!");
-			System.out.printf("Score: %d", Grid.getScore());
+			System.out.printf("Score: %.2f\n", Grid.getScore());
 			return;
 		}
 		else if(gameState.equals("lose")) {
 			animationTimer.stop();
 			System.out.println("Lose!");
-			System.out.printf("Score: %d", Grid.getScore());
+			System.out.printf("Score: %.2f\n", Grid.getScore());
 			return;
 		}
 		
