@@ -42,7 +42,17 @@ In layman's terms, the algorithm is analogous to Darwinian evolution. We start o
 * We repeat this step for however many generations we specified for training.
 
 ### Speciation
-
+* We begin by resetting the species classification for all Individuals.
+  * For each species, we reset it by choosing a random Individual for each species, and designating it as the representative for the entire species.
+  * We then set the species attribute for every Individual within the Species in question to null.
+  * We re-add our representative to our list of Individuals belonging to this Species.
+  * We set our representative's species attribute to the current Species.
+  * We set the score of the species back to 0.
+* Now, for all Individuals, if it isn't a representative, we loop through all the Species and insert the Individual into the first Species it fits into.
+  * An Individual fits into a particular Species if the distance between it and the Species' representative is less than the CP value (A hard-coded constant).
+  * (EXPLAIN DISTANCE)
+* If the Individual doesn't fit into any of the existing Species, a new Species is created, and the Individual is made its representative.
+* Now that all the Individuals belong to a Species, we can recalculate each Species' score (the average score of all its members).
 
 ### Crossbreeding
 * An **Innovation Number** is an identification number that determines when a connection has been created.
